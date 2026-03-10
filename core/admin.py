@@ -1,14 +1,28 @@
 from django.contrib import admin
-from .models import Produtos, Clientes, Pedidos, Usuario
+from .models import *
 
 # Register your models here.
 
 # admin.site.register(Produtos)
 @admin.register(Produtos)
 class ProdutosAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'preco', 'estoque')
+    list_display = ('nome', 'preco', 'mostrar_estoque')
     search_fields = ('nome',)
     list_filter = ('preco',)
+
+    def mostrar_estoque(self, obj):
+        if hasattr(obj, "estoque"):
+            return obj.estoque.quantidade
+        return 0
+
+    mostrar_estoque.short_description = "Estoque"
+
+# admin.site.register(Estoques)
+@admin.register(Estoques)
+class EstoquesAdmin(admin.ModelAdmin):
+    list_display = ('produto', 'quantidade')
+    search_fields = ('produto__nome',)
+    list_filter = ('quantidade',)
 
 # admin.site.register(Clientes)
 @admin.register(Clientes)

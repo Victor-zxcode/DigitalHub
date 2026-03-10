@@ -8,7 +8,6 @@ class Produtos(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(max_length=500)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    estoque = models.IntegerField()
 
     class Meta:
         verbose_name = 'Produto'
@@ -16,6 +15,19 @@ class Produtos(models.Model):
 
     def __str__(self):
         return self.nome
+
+class Estoques(models.Model):
+    produto = models.OneToOneField(Produtos, on_delete=models.CASCADE, related_name="estoque")
+    quantidade = models.IntegerField()
+
+    class Meta:
+        verbose_name = 'Estoque'
+        verbose_name_plural = 'Estoques'
+
+    def __str__(self):
+        return f"Estoque de {self.produto.nome}: {self.quantidade}"
+
+
 
 
 class Clientes(models.Model):
