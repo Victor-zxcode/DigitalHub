@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Produtos da Loja</h1>
+
+<p>Lista de produtos disponíveis.</p>
+
+{% for produto in produtos %}
+
+<div class="produto">
+
+    <h3>{{ produto.nome }}</h3>
+
+    <p>{{ produto.descricao }}</p>
+
+    <p class="preco"><strong>Preço: R$ {{ produto.preco }}</strong></p>
+
+</div>
+
+{% empty %}
+
+<p>Nenhum produto cadastrado.</p>
+
+{% endfor %}
+
+{% endblock %}
