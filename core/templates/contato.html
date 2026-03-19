@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contato — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card" style="max-width: 560px;">
+
+    <div class="auth-card__header">
+      <span class="auth-card__icon">✉️</span>
+      <h1>Fale conosco</h1>
+      <p>Responderemos em até 24 horas.</p>
+    </div>
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+        <span class="form-error">{{ field.errors|join:", " }}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn--primary btn--lg btn--full">
+        Enviar mensagem
+      </button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

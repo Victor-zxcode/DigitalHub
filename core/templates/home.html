@@ -1,78 +1,350 @@
+{% extends "base.html" %}
 {% load static %}
-<!doctype html>
-<html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Home</title>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="#">Loja</a>
+{% block title %}DigitalHub — Produtos Digitais{% endblock %}
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#menu"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
 
-        <div class="collapse navbar-collapse" id="menu">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Home</a>
-            </li>
+{% block content %}
 
-            <li class="nav-item">
-              <a class="nav-link" href="/admin/">Admin</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<header class="navbar" id="navbar">
+  <div class="navbar__inner">
+
+    <a href="{% url 'home' %}" class="navbar__logo">
+      <span class="navbar__logo-icon">⬡</span>
+      <span class="navbar__logo-text">DigitalHub</span>
+    </a>
+
+    <nav class="navbar__links" id="navLinks">
+      <a href="{% url 'home' %}"        class="navbar__link navbar__link--active">Home</a>
+      <a href="{% url 'produtos' %}"    class="navbar__link">Produtos</a>
+      <a href="{% url 'categorias' %}"  class="navbar__link">Categorias</a>
+      <a href="{% url 'ofertas' %}"     class="navbar__link">Ofertas</a>
+      <a href="{% url 'contato' %}"     class="navbar__link">Contato</a>
     </nav>
 
-    <div class="container mt-4">
-      <h1 class="mb-4">Produtos</h1>
+    <div class="navbar__actions">
+  {% if user.is_authenticated %}
+    <a href="{% url 'minha_conta' %}" class="btn btn--ghost">{{ user.username }}</a>
+    <a href="{% url 'logout' %}" class="btn btn--primary">Sair</a>
+  {% else %}
+    <a href="{% url 'login' %}"    class="btn btn--ghost">Entrar</a>
+    <a href="{% url 'cadastro' %}" class="btn btn--primary">Cadastrar</a>
+  {% endif %}
+</div>
 
-      <div class="row">
-        {% for produto in produtos %}
+    <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
 
-        <div class="col-md-4">
-          <div class="card mb-4">
-            <div class="card-body">
-              <h5 class="card-title">{{ produto.nome }}</h5>
+  </div>
+</header>
 
-              <p class="card-text">{{ produto.descricao }}</p>
 
-              <p class="fw-bold">R$ {{ produto.preco }}</p>
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero__bg-grid"></div>
+  <div class="hero__orb hero__orb--1"></div>
+  <div class="hero__orb hero__orb--2"></div>
 
-              <a
-                href="{% url 'comprar_produto' produto.id %}"
-                class="btn btn-primary"
-              >
-                Comprar
-              </a>
+  <div class="hero__inner">
+    <div class="hero__badge">
+      <span class="hero__badge-dot"></span>
+      Mais de 3.000 produtos digitais disponíveis
+    </div>
+
+    <h1 class="hero__title">
+      Seu próximo nível<br>
+      começa <em>aqui.</em>
+    </h1>
+
+    <p class="hero__subtitle">
+      Cursos, e-books, templates e softwares criados por especialistas.
+      Aprenda, crie e evolua com produtos 100% digitais.
+    </p>
+
+    <div class="hero__cta">
+      <a href="{% url 'cadastro' %}" class="btn btn--primary btn--lg">
+        Começar agora
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h12M10 4l6 6-6 6"/></svg>
+      </a>
+      <a href="{% url 'produtos' %}" class="btn btn--outline btn--lg">Ver produtos</a>
+    </div>
+
+    <div class="hero__stats">
+      <div class="hero__stat">
+        <strong>12k+</strong>
+        <span>Alunos ativos</span>
+      </div>
+      <div class="hero__stat-divider"></div>
+      <div class="hero__stat">
+        <strong>98%</strong>
+        <span>Satisfação</span>
+      </div>
+      <div class="hero__stat-divider"></div>
+      <div class="hero__stat">
+        <strong>500+</strong>
+        <span>Criadores</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__scroll-hint">
+    <span>scroll</span>
+    <div class="hero__scroll-line"></div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     CATEGORIAS RÁPIDAS
+═══════════════════════════════════════════ -->
+<section class="categories">
+  <div class="container">
+    <div class="categories__grid">
+
+      <a href="{% url 'categorias' %}?tipo=cursos" class="category-pill">
+        <span class="category-pill__icon">🎓</span>
+        Cursos
+      </a>
+      <a href="{% url 'categorias' %}?tipo=ebooks" class="category-pill">
+        <span class="category-pill__icon">📚</span>
+        E-books
+      </a>
+      <a href="{% url 'categorias' %}?tipo=templates" class="category-pill">
+        <span class="category-pill__icon">🎨</span>
+        Templates
+      </a>
+      <a href="{% url 'categorias' %}?tipo=softwares" class="category-pill">
+        <span class="category-pill__icon">⚙️</span>
+        Softwares
+      </a>
+      <a href="{% url 'categorias' %}?tipo=plugins" class="category-pill">
+        <span class="category-pill__icon">🔌</span>
+        Plugins
+      </a>
+      <a href="{% url 'ofertas' %}" class="category-pill category-pill--highlight">
+        <span class="category-pill__icon">🔥</span>
+        Ofertas
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     PRODUTOS EM DESTAQUE
+═══════════════════════════════════════════ -->
+<section class="products" id="produtos">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-header__label">Destaques</div>
+      <h2 class="section-header__title">Produtos em alta</h2>
+      <p class="section-header__subtitle">
+        Os mais acessados e avaliados pela nossa comunidade esta semana.
+      </p>
+      <a href="{% url 'produtos' %}" class="section-header__link">
+        Ver todos
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h12M10 4l6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="products__grid">
+
+      {% for produto in produtos %}
+      <article class="product-card" data-index="{{ forloop.counter }}">
+
+        <div class="product-card__image-wrap">
+          {% if produto.imagem %}
+            <img
+              src="{{ produto.imagem.url }}"
+              alt="{{ produto.nome }}"
+              class="product-card__image"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="product-card__image-placeholder">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="4" y="8" width="40" height="32" rx="4"/>
+                <path d="M4 30l10-10 8 8 6-6 16 16"/>
+              </svg>
             </div>
+          {% endif %}
+
+          {% if produto.desconto %}
+          <span class="product-card__badge product-card__badge--sale">
+            -{{ produto.desconto }}%
+          </span>
+          {% endif %}
+
+          {% if produto.novo %}
+          <span class="product-card__badge product-card__badge--new">Novo</span>
+          {% endif %}
+
+          <div class="product-card__overlay">
+            <a href="{% url 'produto_detalhe' produto.id %}" class="btn btn--ghost btn--sm">
+              Ver detalhes
+            </a>
           </div>
         </div>
 
-        {% empty %}
+        <div class="product-card__body">
 
-        <p>Nenhum produto encontrado.</p>
+          {% if produto.categoria %}
+          <span class="product-card__category">{{ produto.categoria }}</span>
+          {% endif %}
 
-        {% endfor %}
+          <h3 class="product-card__title">
+            <a href="{% url 'produto_detalhe' produto.id %}">{{ produto.nome }}</a>
+          </h3>
+
+          <p class="product-card__desc">{{ produto.descricao|truncatewords:18 }}</p>
+
+          {% if produto.avaliacao %}
+          <div class="product-card__rating">
+            <div class="product-card__stars" style="--fill: {{ produto.avaliacao_pct }}%">★★★★★</div>
+            <span class="product-card__rating-count">({{ produto.num_avaliacoes }})</span>
+          </div>
+          {% endif %}
+
+          <div class="product-card__footer">
+            <div class="product-card__price-wrap">
+              {% if produto.preco_original %}
+              <span class="product-card__price-original">
+                R$ {{ produto.preco_original|floatformat:2 }}
+              </span>
+              {% endif %}
+              <span class="product-card__price">
+                R$ {{ produto.preco|floatformat:2 }}
+              </span>
+            </div>
+
+            <a
+              href="{% url 'comprar_produto' produto.id %}"
+              class="btn btn--primary btn--sm product-card__buy"
+            >
+              Comprar
+            </a>
+          </div>
+
+        </div>
+      </article>
+      {% empty %}
+      <div class="products__empty">
+        <p>Nenhum produto disponível no momento.</p>
+        <a href="{% url 'contato' %}" class="btn btn--outline">Entrar em contato</a>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     BANNER CTA
+═══════════════════════════════════════════ -->
+<section class="cta-banner">
+  <div class="container">
+    <div class="cta-banner__inner">
+      <div class="cta-banner__content">
+        <h2 class="cta-banner__title">Pronto para começar a vender?</h2>
+        <p class="cta-banner__text">
+          Publique seus produtos digitais e alcance milhares de compradores hoje mesmo.
+        </p>
+      </div>
+      <div class="cta-banner__actions">
+        <a href="{% url 'cadastro' %}" class="btn btn--white btn--lg">Criar conta grátis</a>
+        <a href="{% url 'contato' %}" class="btn btn--ghost-white btn--lg">Falar com a equipe</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER SIMPLES
+═══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+
+      <div class="footer__brand">
+        <a href="{% url 'home' %}" class="navbar__logo">
+          <span class="navbar__logo-icon">⬡</span>
+          <span class="navbar__logo-text">DigitalHub</span>
+        </a>
+        <p>O marketplace de produtos digitais feito para quem cria e para quem aprende.</p>
       </div>
 
-      <a href="/admin/" class="btn btn-primary">Ir para o Admin</a>
+      <div class="footer__links-group">
+        <h4>Plataforma</h4>
+        <a href="{% url 'produtos' %}">Produtos</a>
+        <a href="{% url 'categorias' %}">Categorias</a>
+        <a href="{% url 'ofertas' %}">Ofertas</a>
+      </div>
+
+      <div class="footer__links-group">
+        <h4>Empresa</h4>
+        <a href="#">Sobre nós</a>
+        <a href="{% url 'contato' %}">Contato</a>
+        <a href="#">Blog</a>
+      </div>
+
+      <div class="footer__links-group">
+        <h4>Legal</h4>
+        <a href="#">Privacidade</a>
+        <a href="#">Termos de uso</a>
+        <a href="#">Cookies</a>
+      </div>
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
-</html>
+    <div class="footer__bottom">
+      <p>© {% now "Y" %} DigitalHub. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+  // Navbar scroll shadow
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('navbar--scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // Mobile menu toggle
+  const hamburger = document.getElementById('hamburgerBtn');
+  const navLinks  = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('navbar__links--open');
+    hamburger.classList.toggle('navbar__hamburger--open');
+  });
+
+  // Product cards staggered entrance
+  const cards = document.querySelectorAll('.product-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('product-card--visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  cards.forEach(card => observer.observe(card));
+</script>
+
+{% endblock %}

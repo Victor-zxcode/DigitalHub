@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pedido confirmado — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="confirmado-wrapper">
+  <div class="confirmado-card">
+
+    <div class="confirmado-icone">✅</div>
+    <h1>Compra realizada!</h1>
+    <p>Seu pedido <strong>#{{ pedido.id }}</strong> foi confirmado com sucesso.</p>
+
+    <div class="confirmado-itens">
+      {% for item in pedido.itens.all %}
+      <div class="confirmado-item">
+        <span>{{ item.produto.nome }}</span>
+        <span>R$ {{ item.preco|floatformat:2 }}</span>
+      </div>
+      {% endfor %}
+      <div class="confirmado-item confirmado-item--total">
+        <span>Total pago</span>
+        <span>R$ {{ pedido.total|floatformat:2 }}</span>
+      </div>
+    </div>
+
+    <div class="confirmado-acoes">
+      <a href="{% url 'minha_conta' %}" class="btn btn--primary btn--lg">
+        Ver minha conta
+      </a>
+      <a href="{% url 'produtos' %}" class="btn btn--outline btn--lg">
+        Ver mais produtos
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

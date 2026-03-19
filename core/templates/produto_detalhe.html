@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ produto.nome }} — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/produto_detalhe.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="detalhe-wrapper">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="{% url 'home' %}">Home</a>
+      <span>/</span>
+      <a href="{% url 'produtos' %}">Produtos</a>
+      {% if produto.categoria %}
+      <span>/</span>
+      <a href="{% url 'categoria_detalhe' produto.categoria.slug %}">
+        {{ produto.categoria.nome }}
+      </a>
+      {% endif %}
+      <span>/</span>
+      <span>{{ produto.nome }}</span>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="detalhe-grid">
+
+      <!-- Imagem -->
+      <div class="detalhe-imagem">
+        {% if produto.imagem %}
+          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+        {% else %}
+          <div class="detalhe-imagem__placeholder">
+            <span>{{ produto.categoria.icone|default:"📦" }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Informações -->
+      <div class="detalhe-info">
+
+        {% if produto.categoria %}
+        <span class="detalhe-info__categoria">
+          {{ produto.categoria.icone }} {{ produto.categoria.nome }}
+        </span>
+        {% endif %}
+
+        <h1 class="detalhe-info__titulo">{{ produto.nome }}</h1>
+
+        <p class="detalhe-info__resumo">{{ produto.resumo }}</p>
+
+        <!-- Preço -->
+        <div class="detalhe-preco">
+          {% if produto.tem_desconto %}
+          <span class="detalhe-preco__original">
+            R$ {{ produto.preco_original|floatformat:2 }}
+          </span>
+          <span class="detalhe-preco__badge">
+            -{{ produto.percentual_desconto }}% OFF
+          </span>
+          {% endif %}
+          <div class="detalhe-preco__atual">
+            R$ {{ produto.preco|floatformat:2 }}
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="detalhe-acoes">
+          
+            href="{% url 'comprar_produto' produto.id %}"
+            class="btn btn--primary btn--lg"
+          >
+            Comprar agora
+          </a>
+        </div>
+
+        <!-- Descrição -->
+        <div class="detalhe-descricao">
+          <h3>Sobre este produto</h3>
+          <p>{{ produto.descricao }}</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Produtos relacionados -->
+    {% if relacionados %}
+    <section class="relacionados">
+      <h2 class="relacionados__titulo">Produtos relacionados</h2>
+      <div class="relacionados__grid">
+        {% for rel in relacionados %}
+        <a href="{% url 'produto_detalhe' rel.id %}" class="rel-card">
+          <div class="rel-card__imagem">
+            {% if rel.imagem %}
+              <img src="{{ rel.imagem.url }}" alt="{{ rel.nome }}">
+            {% else %}
+              <div class="rel-card__placeholder">
+                {{ rel.categoria.icone|default:"📦" }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="rel-card__info">
+            <h4>{{ rel.nome }}</h4>
+            <span>R$ {{ rel.preco|floatformat:2 }}</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

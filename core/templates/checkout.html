@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Checkout — {{ produto.nome }}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="checkout-wrapper">
+  <div class="container">
+
+    <div class="checkout-grid">
+
+      <!-- Resumo do produto -->
+      <div class="checkout-resumo">
+        <h2 class="checkout-resumo__titulo">Resumo do pedido</h2>
+
+        <div class="checkout-produto">
+          <div class="checkout-produto__imagem">
+            {% if produto.imagem %}
+              <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+            {% else %}
+              <div class="checkout-produto__placeholder">
+                {{ produto.categoria.icone|default:"📦" }}
+              </div>
+            {% endif %}
+          </div>
+          <div class="checkout-produto__info">
+            {% if produto.categoria %}
+            <span class="checkout-produto__categoria">
+              {{ produto.categoria.nome }}
+            </span>
+            {% endif %}
+            <h3>{{ produto.nome }}</h3>
+            <p>{{ produto.resumo }}</p>
+          </div>
+        </div>
+
+        <div class="checkout-total">
+          <div class="checkout-total__linha">
+            <span>Subtotal</span>
+            <span>R$ {{ produto.preco|floatformat:2 }}</span>
+          </div>
+          {% if produto.tem_desconto %}
+          <div class="checkout-total__linha checkout-total__linha--desconto">
+            <span>Desconto</span>
+            <span>-{{ produto.percentual_desconto }}%</span>
+          </div>
+          {% endif %}
+          <div class="checkout-total__linha checkout-total__linha--total">
+            <span>Total</span>
+            <span>R$ {{ produto.preco|floatformat:2 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ação de compra -->
+      <div class="checkout-acao">
+        <h2>Finalizar compra</h2>
+        <p>Logado como <strong>{{ request.user.username }}</strong></p>
+
+        {% if ja_comprou %}
+        <div class="checkout-aviso">
+          ✅ Você já adquiriu este produto.
+        </div>
+        <a href="{% url 'minha_conta' %}" class="btn btn--primary btn--lg btn--full">
+          Ver minha conta
+        </a>
+
+        {% else %}
+        <form method="post" action="{% url 'confirmar_compra' produto.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn--primary btn--lg btn--full">
+            Confirmar compra — R$ {{ produto.preco|floatformat:2 }}
+          </button>
+        </form>
+        {% endif %}
+
+        <a href="{% url 'produto_detalhe' produto.id %}" class="checkout-voltar">
+          ← Voltar ao produto
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

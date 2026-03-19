@@ -1,0 +1,101 @@
+.auth-wrapper {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--navbar-h) + 2rem) var(--space-lg) var(--space-3xl);
+  background: linear-gradient(145deg, #f0f4ff 0%, #e6efff 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-xl);
+}
+
+.auth-card__header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+.auth-card__icon {
+  display: block;
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+}
+.auth-card__header h1 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+.auth-card__header p {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* Mensagens */
+.auth-messages { margin-bottom: var(--space-lg); }
+.auth-message {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.auth-message--success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+.auth-message--error   { background: #fff0f3; color: #9f1239; border: 1px solid #fecdd3; }
+.auth-message--info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+/* Form */
+.auth-form { display: flex; flex-direction: column; gap: var(--space-md); }
+
+.form-group { display: flex; flex-direction: column; gap: var(--space-xs); }
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+.form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(26, 76, 255, .12);
+  background: var(--color-white);
+}
+
+.form-error {
+  font-size: 0.78rem;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.btn--full { width: 100%; justify-content: center; }
+
+.auth-card__footer {
+  text-align: center;
+  margin-top: var(--space-lg);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+.auth-card__footer a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.auth-card__footer a:hover { text-decoration: underline; }

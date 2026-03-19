@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <div class="auth-card__header">
+      <span class="auth-card__icon">⬡</span>
+      <h1>Entrar</h1>
+      <p>Acesse sua conta para continuar.</p>
+    </div>
+
+    {% if messages %}
+    <div class="auth-messages">
+      {% for message in messages %}
+      <div class="auth-message auth-message--{{ message.tags }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% if field.errors %}
+        <span class="form-error">{{ field.errors|join:", " }}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <button type="submit" class="btn btn--primary btn--lg btn--full">
+        Entrar
+      </button>
+    </form>
+
+    <p class="auth-card__footer">
+      Não tem conta?
+      <a href="{% url 'cadastro' %}">Cadastre-se grátis</a>
+    </p>
+
+  </div>
+</div>
+{% endblock %}

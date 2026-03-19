@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Erro interno — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/erros.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="erro-wrapper">
+  <div class="erro-card">
+    <div class="erro-card__codigo">500</div>
+    <h1 class="erro-card__titulo">Erro interno</h1>
+    <p class="erro-card__texto">
+      Algo deu errado no servidor. Nossa equipe já foi notificada.
+    </p>
+    <div class="erro-card__acoes">
+      <a href="{% url 'home' %}" class="btn btn--primary btn--lg">Voltar para home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

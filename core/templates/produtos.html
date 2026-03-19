@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Produtos — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/produtos.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="lista-wrapper">
+  <div class="container">
+
+    <!-- Cabeçalho -->
+    <div class="lista-header">
+      <div>
+        <h1 class="lista-header__titulo">
+          {% if busca %}
+            Resultados para "{{ busca }}"
+          {% elif categoria_ativa %}
+            {{ categoria_ativa.icone }} {{ categoria_ativa.nome }}
+          {% else %}
+            Todos os produtos
+          {% endif %}
+        </h1>
+        <p class="lista-header__contagem">
+          {{ total_resultados }} produto{{ total_resultados|pluralize }} encontrado{{ total_resultados|pluralize }}
+        </p>
+      </div>
+
+      <!-- Busca -->
+      <form method="get" class="lista-busca">
+        {% if categoria_ativa %}
+        <input type="hidden" name="categoria" value="{{ categoria_ativa.slug }}">
+        {% endif %}
+        <input
+          type="text"
+          name="q"
+          value="{{ busca }}"
+          placeholder="Buscar produtos..."
+          class="lista-busca__input"
+        >
+        <button type="submit" class="btn btn--primary">Buscar</button>
+        {% if busca %}
+        <a href="{% url 'produtos' %}" class="btn btn--ghost">Limpar</a>
+        {% endif %}
+      </form>
+    </div>
+
+    <div class="lista-grid">
+
+      <!-- Sidebar de categorias -->
+      <aside class="lista-sidebar">
+        <h3 class="lista-sidebar__titulo">Categorias</h3>
+        <nav class="lista-sidebar__nav">
+
+          
+            href="{% url 'produtos' %}{% if busca %}?q={{ busca }}{% endif %}"
+            class="lista-sidebar__link {% if not categoria_ativa %}lista-sidebar__link--ativo{% endif %}"
+          >
+            Todos
+          </a>
+
+          {% for cat in categorias %}
+          
+            href="?categoria={{ cat.slug }}{% if busca %}&q={{ busca }}{% endif %}"
+            class="lista-sidebar__link {% if categoria_ativa.slug == cat.slug %}lista-sidebar__link--ativo{% endif %}"
+          >
+            <span>{{ cat.icone }}</span>
+            {{ cat.nome }}
+          </a>
+          {% endfor %}
+
+        </nav>
+      </aside>
+
+      <!-- Lista de produtos -->
+      <div class="lista-conteudo">
+
+        {% if produtos %}
+        <div class="lista-produtos">
+          {% for produto in produtos %}
+          <article class="product-card product-card--visible">
+
+            <div class="product-card__image-wrap">
+              {% if produto.imagem %}
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-card__image" loading="lazy">
+              {% else %}
+                <div class="product-card__image-placeholder">
+                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="4" y="8" width="40" height="32" rx="4"/>
+                    <path d="M4 30l10-10 8 8 6-6 16 16"/>
+                  </svg>
+                </div>
+              {% endif %}
+              {% if produto.tem_desconto %}
+              <span class="product-card__badge product-card__badge--sale">-{{ produto.percentual_desconto }}%</span>
+              {% endif %}
+              <div class="product-card__overlay">
+                <a href="{% url 'produto_detalhe' produto.id %}" class="btn btn--ghost btn--sm">Ver detalhes</a>
+              </div>
+            </div>
+
+            <div class="product-card__body">
+              {% if produto.categoria %}
+              <span class="product-card__category">{{ produto.categoria.nome }}</span>
+              {% endif %}
+              <h3 class="product-card__title">
+                <a href="{% url 'produto_detalhe' produto.id %}">{{ produto.nome }}</a>
+              </h3>
+              <p class="product-card__desc">{{ produto.resumo|default:produto.descricao|truncatewords:15 }}</p>
+              <div class="product-card__footer">
+                <div class="product-card__price-wrap">
+                  {% if produto.preco_original %}
+                  <span class="product-card__price-original">R$ {{ produto.preco_original|floatformat:2 }}</span>
+                  {% endif %}
+                  <span class="product-card__price">R$ {{ produto.preco|floatformat:2 }}</span>
+                </div>
+                <a href="{% url 'comprar_produto' produto.id %}" class="btn btn--primary btn--sm">Comprar</a>
+              </div>
+            </div>
+
+          </article>
+          {% endfor %}
+        </div>
+
+        <!-- Paginação -->
+        {% if produtos.has_other_pages %}
+        <nav class="paginacao">
+          {% if produtos.has_previous %}
+          
+            href="?page={{ produtos.previous_page_number }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}"
+            class="paginacao__btn"
+          >← Anterior</a>
+          {% endif %}
+
+          <div class="paginacao__paginas">
+            {% for num in produtos.paginator.page_range %}
+              {% if produtos.number == num %}
+              <span class="paginacao__pagina paginacao__pagina--ativa">{{ num }}</span>
+              {% elif num > produtos.number|add:'-3' and num < produtos.number|add:'3' %}
+              
+                href="?page={{ num }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}"
+                class="paginacao__pagina"
+              >{{ num }}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if produtos.has_next %}
+          
+            href="?page={{ produtos.next_page_number }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}"
+            class="paginacao__btn"
+          >Próxima →</a>
+          {% endif %}
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="lista-vazio">
+          <p>Nenhum produto encontrado.</p>
+          <a href="{% url 'produtos' %}" class="btn btn--outline">Ver todos os produtos</a>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

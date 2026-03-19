@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-66m##(w+r8=!&^@=&7u!tf7ws)-))yiq56y3%3f@vfu!an*qda
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -120,7 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_FILES_DIRS = [BASE_DIR / 'static']
 AUTH_USER_MODEL = 'core.Usuario'
 
@@ -138,3 +139,20 @@ CHANNEL_LAYERS = {
 JAZZMIN_SETTINGS = {
     "site_title": "Loja de Eletrônicos - Administração",
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LOGIN_URL          = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY    = True
+X_FRAME_OPTIONS         = 'DENY'
+
+
+LOGIN_URL           = '/login/'
+LOGIN_REDIRECT_URL  = '/'
+LOGOUT_REDIRECT_URL = '/'
