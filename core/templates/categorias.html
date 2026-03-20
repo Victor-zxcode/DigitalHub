@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Categorias — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/categorias.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="cats-wrapper">
+  <div class="container">
+
+    <!-- Cabeçalho -->
+    <div class="cats-header">
+      <div class="cats-header__label">Explorar</div>
+      <h1 class="cats-header__title">Categorias</h1>
+      <p class="cats-header__sub">
+        Navegue por área de conhecimento e encontre exatamente o que você precisa.
+      </p>
+    </div>
+
+    <!-- Grid de categorias -->
+    {% if categorias %}
+    <div class="cats-grid">
+      {% for cat in categorias %}
+      <a href="{% url 'categoria_detalhe' cat.slug %}" class="cat-card">
+        <div class="cat-card__icon">
+          <i data-lucide="{{ cat.icone_lucide|default:'folder' }}" class="cat-card__lucide"></i>
+        </div>
+        <div class="cat-card__body">
+          <h3 class="cat-card__title">{{ cat.nome }}</h3>
+          <p class="cat-card__count">
+            {{ cat.produtos.count }} produto{{ cat.produtos.count|pluralize }}
+          </p>
+        </div>
+        <i data-lucide="arrow-right" class="cat-card__arrow"></i>
+      </a>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="cats-vazio">
+      <div class="cats-vazio__icon">
+        <i data-lucide="folder-open" style="width:40px;height:40px;stroke-width:1;color:var(--ink-300);"></i>
+      </div>
+      <h3>Nenhuma categoria disponível</h3>
+      <p>Em breve novas categorias serão adicionadas.</p>
+      <a href="{% url 'produtos' %}" class="btn btn--outline">Ver todos os produtos</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  lucide.createIcons();
+
+  // Entrada animada
+  const cards = document.querySelectorAll('.cat-card');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('cat-card--visible'), i * 60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  cards.forEach(c => obs.observe(c));
+</script>
+
+{% endblock %}

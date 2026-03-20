@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ categoria.nome }} — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/categorias.css' %}">
+<link rel="stylesheet" href="{% static 'css/produtos.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="cats-wrapper">
+  <div class="container">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-simple">
+      <a href="{% url 'home' %}">Home</a>
+      <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--ink-300);"></i>
+      <a href="{% url 'categorias' %}">Categorias</a>
+      <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--ink-300);"></i>
+      <span>{{ categoria.nome }}</span>
+    </nav>
+
+    <!-- Cabeçalho da categoria -->
+    <div class="cats-header">
+      <div class="cats-header__label">Categoria</div>
+      <h1 class="cats-header__title">{{ categoria.nome }}</h1>
+      <p class="cats-header__sub">
+        {{ produtos.count }} produto{{ produtos.count|pluralize }} disponíve{{ produtos.count|pluralize:"l,is" }}
+      </p>
+    </div>
+
+    <!-- Produtos da categoria -->
+    {% if produtos %}
+    <div class="lista-produtos">
+      {% for produto in produtos %}
+      <article class="pcard pcard--visible">
+        <div class="pcard__media">
+          {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="pcard__img" loading="lazy">
+          {% else %}
+            <div class="pcard__placeholder">
+              <i data-lucide="image" class="pcard__placeholder-icon"></i>
+            </div>
+          {% endif %}
+          {% if produto.tem_desconto %}
+          <span class="pcard__badge">-{{ produto.percentual_desconto }}%</span>
+          {% endif %}
+          <div class="pcard__overlay">
+            <a href="{% url 'produto_detalhe' produto.id %}" class="btn btn--white btn--sm">
+              <i data-lucide="eye" style="width:13px;height:13px;stroke-width:2;"></i>
+              Ver detalhes
+            </a>
+          </div>
+        </div>
+        <div class="pcard__body">
+          <h3 class="pcard__title">
+            <a href="{% url 'produto_detalhe' produto.id %}">{{ produto.nome }}</a>
+          </h3>
+          <p class="pcard__desc">{{ produto.resumo|default:produto.descricao|truncatewords:14 }}</p>
+          <div class="pcard__footer">
+            <div class="pcard__pricing">
+              {% if produto.preco_original %}
+              <span class="pcard__price-old">R$ {{ produto.preco_original|floatformat:2 }}</span>
+              {% endif %}
+              <span class="pcard__price">R$ {{ produto.preco|floatformat:2 }}</span>
+            </div>
+            <a href="{% url 'comprar_produto' produto.id %}" class="btn btn--primary btn--sm">Comprar</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="cats-vazio">
+      <div class="cats-vazio__icon">
+        <i data-lucide="package-open" style="width:40px;height:40px;stroke-width:1;color:var(--ink-300);"></i>
+      </div>
+      <h3>Nenhum produto nesta categoria</h3>
+      <p>Em breve novos produtos serão adicionados aqui.</p>
+      <a href="{% url 'categorias' %}" class="btn btn--outline">Ver outras categorias</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+{% endblock %}

@@ -4,9 +4,6 @@
 {% block title %}DigitalHub — Produtos Digitais{% endblock %}
 
 {% block extra_head %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
@@ -19,27 +16,29 @@
   <div class="navbar__inner">
 
     <a href="{% url 'home' %}" class="navbar__logo">
-      <span class="navbar__logo-icon">⬡</span>
+      <span class="navbar__logo-icon">
+        <i data-lucide="layers" style="width:14px;height:14px;stroke-width:2;color:white;"></i>
+      </span>
       <span class="navbar__logo-text">DigitalHub</span>
     </a>
 
     <nav class="navbar__links" id="navLinks">
-      <a href="{% url 'home' %}"        class="navbar__link navbar__link--active">Home</a>
-      <a href="{% url 'produtos' %}"    class="navbar__link">Produtos</a>
-      <a href="{% url 'categorias' %}"  class="navbar__link">Categorias</a>
-      <a href="{% url 'ofertas' %}"     class="navbar__link">Ofertas</a>
-      <a href="{% url 'contato' %}"     class="navbar__link">Contato</a>
+      <a href="{% url 'home' %}"       class="navbar__link navbar__link--active">Home</a>
+      <a href="{% url 'produtos' %}"   class="navbar__link">Produtos</a>
+      <a href="{% url 'categorias' %}" class="navbar__link">Categorias</a>
+      <a href="{% url 'ofertas' %}"    class="navbar__link">Ofertas</a>
+      <a href="{% url 'contato' %}"    class="navbar__link">Contato</a>
     </nav>
 
     <div class="navbar__actions">
-  {% if user.is_authenticated %}
-    <a href="{% url 'minha_conta' %}" class="btn btn--ghost">{{ user.username }}</a>
-    <a href="{% url 'logout' %}" class="btn btn--primary">Sair</a>
-  {% else %}
-    <a href="{% url 'login' %}"    class="btn btn--ghost">Entrar</a>
-    <a href="{% url 'cadastro' %}" class="btn btn--primary">Cadastrar</a>
-  {% endif %}
-</div>
+      {% if user.is_authenticated %}
+        <a href="{% url 'minha_conta' %}" class="btn btn--ghost">{{ user.username }}</a>
+        <a href="{% url 'logout' %}"      class="btn btn--primary">Sair</a>
+      {% else %}
+        <a href="{% url 'login' %}"    class="btn btn--ghost">Entrar</a>
+        <a href="{% url 'cadastro' %}" class="btn btn--primary">Cadastrar</a>
+      {% endif %}
+    </div>
 
     <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -76,9 +75,11 @@
     <div class="hero__cta">
       <a href="{% url 'cadastro' %}" class="btn btn--primary btn--lg">
         Começar agora
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h12M10 4l6 6-6 6"/></svg>
+        <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
       </a>
-      <a href="{% url 'produtos' %}" class="btn btn--outline btn--lg">Ver produtos</a>
+      <a href="{% url 'produtos' %}" class="btn btn--ghost btn--lg">
+        Ver produtos
+      </a>
     </div>
 
     <div class="hero__stats">
@@ -114,27 +115,27 @@
     <div class="categories__grid">
 
       <a href="{% url 'categorias' %}?tipo=cursos" class="category-pill">
-        <span class="category-pill__icon">🎓</span>
+        <i data-lucide="graduation-cap" class="pill-icon"></i>
         Cursos
       </a>
       <a href="{% url 'categorias' %}?tipo=ebooks" class="category-pill">
-        <span class="category-pill__icon">📚</span>
+        <i data-lucide="book-open" class="pill-icon"></i>
         E-books
       </a>
       <a href="{% url 'categorias' %}?tipo=templates" class="category-pill">
-        <span class="category-pill__icon">🎨</span>
+        <i data-lucide="layout-template" class="pill-icon"></i>
         Templates
       </a>
       <a href="{% url 'categorias' %}?tipo=softwares" class="category-pill">
-        <span class="category-pill__icon">⚙️</span>
+        <i data-lucide="cpu" class="pill-icon"></i>
         Softwares
       </a>
       <a href="{% url 'categorias' %}?tipo=plugins" class="category-pill">
-        <span class="category-pill__icon">🔌</span>
+        <i data-lucide="puzzle" class="pill-icon"></i>
         Plugins
       </a>
       <a href="{% url 'ofertas' %}" class="category-pill category-pill--highlight">
-        <span class="category-pill__icon">🔥</span>
+        <i data-lucide="tag" class="pill-icon"></i>
         Ofertas
       </a>
 
@@ -157,7 +158,7 @@
       </p>
       <a href="{% url 'produtos' %}" class="section-header__link">
         Ver todos
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10h12M10 4l6 6-6 6"/></svg>
+        <i data-lucide="arrow-right" style="width:15px;height:15px;stroke-width:2;"></i>
       </a>
     </div>
 
@@ -176,21 +177,14 @@
             >
           {% else %}
             <div class="product-card__image-placeholder">
-              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-                <rect x="4" y="8" width="40" height="32" rx="4"/>
-                <path d="M4 30l10-10 8 8 6-6 16 16"/>
-              </svg>
+              <i data-lucide="image" style="width:36px;height:36px;stroke-width:1;"></i>
             </div>
           {% endif %}
 
-          {% if produto.desconto %}
+          {% if produto.tem_desconto %}
           <span class="product-card__badge product-card__badge--sale">
-            -{{ produto.desconto }}%
+            -{{ produto.percentual_desconto }}%
           </span>
-          {% endif %}
-
-          {% if produto.novo %}
-          <span class="product-card__badge product-card__badge--new">Novo</span>
           {% endif %}
 
           <div class="product-card__overlay">
@@ -201,7 +195,6 @@
         </div>
 
         <div class="product-card__body">
-
           {% if produto.categoria %}
           <span class="product-card__category">{{ produto.categoria }}</span>
           {% endif %}
@@ -210,14 +203,9 @@
             <a href="{% url 'produto_detalhe' produto.id %}">{{ produto.nome }}</a>
           </h3>
 
-          <p class="product-card__desc">{{ produto.descricao|truncatewords:18 }}</p>
-
-          {% if produto.avaliacao %}
-          <div class="product-card__rating">
-            <div class="product-card__stars" style="--fill: {{ produto.avaliacao_pct }}%">★★★★★</div>
-            <span class="product-card__rating-count">({{ produto.num_avaliacoes }})</span>
-          </div>
-          {% endif %}
+          <p class="product-card__desc">
+            {{ produto.resumo|default:produto.descricao|truncatewords:18 }}
+          </p>
 
           <div class="product-card__footer">
             <div class="product-card__price-wrap">
@@ -231,10 +219,8 @@
               </span>
             </div>
 
-            <a
-              href="{% url 'comprar_produto' produto.id %}"
-              class="btn btn--primary btn--sm product-card__buy"
-            >
+            <a href="{% url 'comprar_produto' produto.id %}"
+               class="btn btn--primary btn--sm product-card__buy">
               Comprar
             </a>
           </div>
@@ -243,6 +229,7 @@
       </article>
       {% empty %}
       <div class="products__empty">
+        <i data-lucide="package-open" style="width:48px;height:48px;stroke-width:1;color:var(--ink-200);"></i>
         <p>Nenhum produto disponível no momento.</p>
         <a href="{% url 'contato' %}" class="btn btn--outline">Entrar em contato</a>
       </div>
@@ -266,8 +253,13 @@
         </p>
       </div>
       <div class="cta-banner__actions">
-        <a href="{% url 'cadastro' %}" class="btn btn--white btn--lg">Criar conta grátis</a>
-        <a href="{% url 'contato' %}" class="btn btn--ghost-white btn--lg">Falar com a equipe</a>
+        <a href="{% url 'cadastro' %}" class="btn btn--white btn--lg">
+          Criar conta grátis
+          <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
+        </a>
+        <a href="{% url 'contato' %}" class="btn btn--ghost-white btn--lg">
+          Falar com a equipe
+        </a>
       </div>
     </div>
   </div>
@@ -275,16 +267,18 @@
 
 
 <!-- ═══════════════════════════════════════════
-     FOOTER SIMPLES
+     FOOTER
 ═══════════════════════════════════════════ -->
 <footer class="footer">
   <div class="container">
     <div class="footer__top">
 
       <div class="footer__brand">
-        <a href="{% url 'home' %}" class="navbar__logo">
-          <span class="navbar__logo-icon">⬡</span>
-          <span class="navbar__logo-text">DigitalHub</span>
+        <a href="{% url 'home' %}" class="navbar__logo" style="margin-bottom:var(--s4);display:inline-flex;">
+          <span class="navbar__logo-icon">
+            <i data-lucide="layers" style="width:14px;height:14px;stroke-width:2;color:white;"></i>
+          </span>
+          <span class="navbar__logo-text" style="color:white;">DigitalHub</span>
         </a>
         <p>O marketplace de produtos digitais feito para quem cria e para quem aprende.</p>
       </div>
@@ -319,14 +313,19 @@
 </footer>
 
 
+<!-- Lucide Icons CDN -->
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
-  // Navbar scroll shadow
+  // Ativa todos os ícones Lucide na página
+  lucide.createIcons();
+
+  // Navbar scroll
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
     navbar.classList.toggle('navbar--scrolled', window.scrollY > 20);
   }, { passive: true });
 
-  // Mobile menu toggle
+  // Mobile menu
   const hamburger = document.getElementById('hamburgerBtn');
   const navLinks  = document.getElementById('navLinks');
   hamburger.addEventListener('click', () => {
@@ -334,7 +333,7 @@
     hamburger.classList.toggle('navbar__hamburger--open');
   });
 
-  // Product cards staggered entrance
+  // Cards entrance animation
   const cards = document.querySelectorAll('.product-card');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ofertas — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/categorias.css' %}">
+<link rel="stylesheet" href="{% static 'css/produtos.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="cats-wrapper">
+  <div class="container">
+
+    <!-- Cabeçalho -->
+    <div class="cats-header cats-header--ofertas">
+      <div class="cats-header__label">
+        <i data-lucide="tag" style="width:12px;height:12px;stroke-width:2.5;"></i>
+        Promoções ativas
+      </div>
+      <h1 class="cats-header__title">Ofertas especiais</h1>
+      <p class="cats-header__sub">
+        Produtos com desconto selecionados por tempo limitado. Aproveite antes que acabe.
+      </p>
+    </div>
+
+    <!-- Produtos em oferta -->
+    {% if produtos %}
+
+    <div class="ofertas-stats">
+      <div class="ofertas-stat">
+        <i data-lucide="package" class="ofertas-stat__icon"></i>
+        <div>
+          <strong>{{ produtos.count }}</strong>
+          <span>oferta{{ produtos.count|pluralize }} ativa{{ produtos.count|pluralize }}</span>
+        </div>
+      </div>
+      <div class="ofertas-stat">
+        <i data-lucide="percent" class="ofertas-stat__icon"></i>
+        <div>
+          <strong>Até 70%</strong>
+          <span>de desconto</span>
+        </div>
+      </div>
+      <div class="ofertas-stat">
+        <i data-lucide="clock" class="ofertas-stat__icon"></i>
+        <div>
+          <strong>Por tempo</strong>
+          <span>limitado</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lista-produtos">
+      {% for produto in produtos %}
+      <article class="pcard pcard--visible pcard--oferta">
+        <div class="pcard__media">
+          {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="pcard__img" loading="lazy">
+          {% else %}
+            <div class="pcard__placeholder">
+              <i data-lucide="image" class="pcard__placeholder-icon"></i>
+            </div>
+          {% endif %}
+          <span class="pcard__badge pcard__badge--lg">-{{ produto.percentual_desconto }}% OFF</span>
+          <div class="pcard__overlay">
+            <a href="{% url 'produto_detalhe' produto.id %}" class="btn btn--white btn--sm">
+              <i data-lucide="eye" style="width:13px;height:13px;stroke-width:2;"></i>
+              Ver detalhes
+            </a>
+          </div>
+        </div>
+        <div class="pcard__body">
+          {% if produto.categoria %}
+          <span class="pcard__cat">{{ produto.categoria.nome }}</span>
+          {% endif %}
+          <h3 class="pcard__title">
+            <a href="{% url 'produto_detalhe' produto.id %}">{{ produto.nome }}</a>
+          </h3>
+          <p class="pcard__desc">{{ produto.resumo|default:produto.descricao|truncatewords:14 }}</p>
+          <div class="pcard__footer">
+            <div class="pcard__pricing">
+              <span class="pcard__price-old">R$ {{ produto.preco_original|floatformat:2 }}</span>
+              <span class="pcard__price pcard__price--oferta">R$ {{ produto.preco|floatformat:2 }}</span>
+            </div>
+            <a href="{% url 'comprar_produto' produto.id %}" class="btn btn--primary btn--sm">Comprar</a>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="cats-vazio">
+      <div class="cats-vazio__icon">
+        <i data-lucide="tag" style="width:40px;height:40px;stroke-width:1;color:var(--ink-300);"></i>
+      </div>
+      <h3>Nenhuma oferta ativa no momento</h3>
+      <p>Volte em breve para conferir as promoções.</p>
+      <a href="{% url 'produtos' %}" class="btn btn--outline">Ver todos os produtos</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
+{% endblock %}

@@ -4,35 +4,101 @@
 {% block title %}Contato — DigitalHub{% endblock %}
 
 {% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/categorias.css' %}">
 <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="auth-wrapper">
-  <div class="auth-card" style="max-width: 560px;">
 
-    <div class="auth-card__header">
-      <span class="auth-card__icon">✉️</span>
-      <h1>Fale conosco</h1>
-      <p>Responderemos em até 24 horas.</p>
-    </div>
+<div class="contato-wrapper">
+  <div class="container">
 
-    <form method="post" class="auth-form">
-      {% csrf_token %}
-      {% for field in form %}
-      <div class="form-group">
-        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {% if field.errors %}
-        <span class="form-error">{{ field.errors|join:", " }}</span>
-        {% endif %}
+    <div class="contato-grid">
+
+      <!-- Info lateral -->
+      <div class="contato-info">
+        <div class="cats-header__label">Suporte</div>
+        <h1 class="contato-info__title">Fale com a gente</h1>
+        <p class="contato-info__sub">
+          Tem dúvidas, sugestões ou precisa de ajuda? Nossa equipe responde em até 24 horas.
+        </p>
+
+        <div class="contato-canais">
+
+          <div class="contato-canal">
+            <div class="contato-canal__icon">
+              <i data-lucide="mail" style="width:18px;height:18px;stroke-width:1.75;color:var(--blue);"></i>
+            </div>
+            <div>
+              <strong>E-mail</strong>
+              <p>contato@digitalhub.com</p>
+            </div>
+          </div>
+
+          <div class="contato-canal">
+            <div class="contato-canal__icon">
+              <i data-lucide="message-circle" style="width:18px;height:18px;stroke-width:1.75;color:var(--blue);"></i>
+            </div>
+            <div>
+              <strong>Chat</strong>
+              <p>Disponível de seg a sex, 9h–18h</p>
+            </div>
+          </div>
+
+          <div class="contato-canal">
+            <div class="contato-canal__icon">
+              <i data-lucide="clock" style="width:18px;height:18px;stroke-width:1.75;color:var(--blue);"></i>
+            </div>
+            <div>
+              <strong>Tempo de resposta</strong>
+              <p>Até 24 horas úteis</p>
+            </div>
+          </div>
+
+        </div>
       </div>
-      {% endfor %}
-      <button type="submit" class="btn btn--primary btn--lg btn--full">
-        Enviar mensagem
-      </button>
-    </form>
 
+      <!-- Formulário -->
+      <div class="auth-card contato-card">
+        <div class="auth-card__header">
+          <span class="auth-card__icon">
+            <i data-lucide="send" style="width:20px;height:20px;stroke-width:2;color:white;"></i>
+          </span>
+          <h2>Enviar mensagem</h2>
+          <p>Preencha o formulário e retornaremos em breve.</p>
+        </div>
+
+        {% if messages %}
+        <div class="auth-messages">
+          {% for message in messages %}
+          <div class="auth-message auth-message--{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="form-group">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+            <span class="form-error">{{ field.errors|join:", " }}</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn--primary btn--lg btn--full">
+            Enviar mensagem
+            <i data-lucide="send" style="width:15px;height:15px;stroke-width:2;"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
   </div>
 </div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+
 {% endblock %}

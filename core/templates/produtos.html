@@ -19,7 +19,7 @@
           {% if busca %}
             Resultados para "{{ busca }}"
           {% elif categoria_ativa %}
-            {{ categoria_ativa.icone }} {{ categoria_ativa.nome }}
+            {{ categoria_ativa.nome }}
           {% else %}
             Todos os produtos
           {% endif %}
@@ -29,18 +29,20 @@
         </p>
       </div>
 
-      <!-- Busca -->
       <form method="get" class="lista-busca">
         {% if categoria_ativa %}
         <input type="hidden" name="categoria" value="{{ categoria_ativa.slug }}">
         {% endif %}
-        <input
-          type="text"
-          name="q"
-          value="{{ busca }}"
-          placeholder="Buscar produtos..."
-          class="lista-busca__input"
-        >
+        <div class="lista-busca__wrap">
+          <i data-lucide="search" class="lista-busca__icon"></i>
+          <input
+            type="text"
+            name="q"
+            value="{{ busca }}"
+            placeholder="Buscar produtos..."
+            class="lista-busca__input"
+          >
+        </div>
         <button type="submit" class="btn btn--primary">Buscar</button>
         {% if busca %}
         <a href="{% url 'produtos' %}" class="btn btn--ghost">Limpar</a>
@@ -50,24 +52,25 @@
 
     <div class="lista-grid">
 
-      <!-- Sidebar de categorias -->
+      <!-- Sidebar -->
       <aside class="lista-sidebar">
-        <h3 class="lista-sidebar__titulo">Categorias</h3>
+        <p class="lista-sidebar__titulo">Categorias</p>
         <nav class="lista-sidebar__nav">
 
-          
+          <a
             href="{% url 'produtos' %}{% if busca %}?q={{ busca }}{% endif %}"
             class="lista-sidebar__link {% if not categoria_ativa %}lista-sidebar__link--ativo{% endif %}"
           >
+            <i data-lucide="layout-grid" class="sidebar-icon"></i>
             Todos
           </a>
 
           {% for cat in categorias %}
-          
+          <a
             href="?categoria={{ cat.slug }}{% if busca %}&q={{ busca }}{% endif %}"
             class="lista-sidebar__link {% if categoria_ativa.slug == cat.slug %}lista-sidebar__link--ativo{% endif %}"
           >
-            <span>{{ cat.icone }}</span>
+            <i data-lucide="chevron-right" class="sidebar-icon sidebar-icon--chevron"></i>
             {{ cat.nome }}
           </a>
           {% endfor %}
@@ -75,49 +78,58 @@
         </nav>
       </aside>
 
-      <!-- Lista de produtos -->
+      <!-- Conteúdo -->
       <div class="lista-conteudo">
 
         {% if produtos %}
         <div class="lista-produtos">
           {% for produto in produtos %}
-          <article class="product-card product-card--visible">
+          <article class="pcard">
 
-            <div class="product-card__image-wrap">
+            <div class="pcard__media">
               {% if produto.imagem %}
-                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="product-card__image" loading="lazy">
+                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="pcard__img" loading="lazy">
               {% else %}
-                <div class="product-card__image-placeholder">
-                  <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <rect x="4" y="8" width="40" height="32" rx="4"/>
-                    <path d="M4 30l10-10 8 8 6-6 16 16"/>
-                  </svg>
+                <div class="pcard__placeholder">
+                  <i data-lucide="image" class="pcard__placeholder-icon"></i>
                 </div>
               {% endif %}
+
               {% if produto.tem_desconto %}
-              <span class="product-card__badge product-card__badge--sale">-{{ produto.percentual_desconto }}%</span>
+              <span class="pcard__badge">-{{ produto.percentual_desconto }}%</span>
               {% endif %}
-              <div class="product-card__overlay">
-                <a href="{% url 'produto_detalhe' produto.id %}" class="btn btn--ghost btn--sm">Ver detalhes</a>
+
+              <div class="pcard__overlay">
+                <a href="{% url 'produto_detalhe' produto.id %}" class="btn btn--white btn--sm">
+                  <i data-lucide="eye" style="width:13px;height:13px;stroke-width:2;"></i>
+                  Ver detalhes
+                </a>
               </div>
             </div>
 
-            <div class="product-card__body">
+            <div class="pcard__body">
               {% if produto.categoria %}
-              <span class="product-card__category">{{ produto.categoria.nome }}</span>
+              <span class="pcard__cat">{{ produto.categoria.nome }}</span>
               {% endif %}
-              <h3 class="product-card__title">
+
+              <h3 class="pcard__title">
                 <a href="{% url 'produto_detalhe' produto.id %}">{{ produto.nome }}</a>
               </h3>
-              <p class="product-card__desc">{{ produto.resumo|default:produto.descricao|truncatewords:15 }}</p>
-              <div class="product-card__footer">
-                <div class="product-card__price-wrap">
+
+              <p class="pcard__desc">
+                {{ produto.resumo|default:produto.descricao|truncatewords:14 }}
+              </p>
+
+              <div class="pcard__footer">
+                <div class="pcard__pricing">
                   {% if produto.preco_original %}
-                  <span class="product-card__price-original">R$ {{ produto.preco_original|floatformat:2 }}</span>
+                  <span class="pcard__price-old">R$ {{ produto.preco_original|floatformat:2 }}</span>
                   {% endif %}
-                  <span class="product-card__price">R$ {{ produto.preco|floatformat:2 }}</span>
+                  <span class="pcard__price">R$ {{ produto.preco|floatformat:2 }}</span>
                 </div>
-                <a href="{% url 'comprar_produto' produto.id %}" class="btn btn--primary btn--sm">Comprar</a>
+                <a href="{% url 'comprar_produto' produto.id %}" class="btn btn--primary btn--sm">
+                  Comprar
+                </a>
               </div>
             </div>
 
@@ -129,10 +141,10 @@
         {% if produtos.has_other_pages %}
         <nav class="paginacao">
           {% if produtos.has_previous %}
-          
-            href="?page={{ produtos.previous_page_number }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}"
-            class="paginacao__btn"
-          >← Anterior</a>
+          <a href="?page={{ produtos.previous_page_number }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}" class="paginacao__btn">
+            <i data-lucide="arrow-left" style="width:14px;height:14px;stroke-width:2;"></i>
+            Anterior
+          </a>
           {% endif %}
 
           <div class="paginacao__paginas">
@@ -140,26 +152,27 @@
               {% if produtos.number == num %}
               <span class="paginacao__pagina paginacao__pagina--ativa">{{ num }}</span>
               {% elif num > produtos.number|add:'-3' and num < produtos.number|add:'3' %}
-              
-                href="?page={{ num }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}"
-                class="paginacao__pagina"
-              >{{ num }}</a>
+              <a href="?page={{ num }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}" class="paginacao__pagina">{{ num }}</a>
               {% endif %}
             {% endfor %}
           </div>
 
           {% if produtos.has_next %}
-          
-            href="?page={{ produtos.next_page_number }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}"
-            class="paginacao__btn"
-          >Próxima →</a>
+          <a href="?page={{ produtos.next_page_number }}{% if busca %}&q={{ busca }}{% endif %}{% if categoria_ativa %}&categoria={{ categoria_ativa.slug }}{% endif %}" class="paginacao__btn">
+            Próxima
+            <i data-lucide="arrow-right" style="width:14px;height:14px;stroke-width:2;"></i>
+          </a>
           {% endif %}
         </nav>
         {% endif %}
 
         {% else %}
         <div class="lista-vazio">
-          <p>Nenhum produto encontrado.</p>
+          <div class="lista-vazio__icon">
+            <i data-lucide="package-open" style="width:40px;height:40px;stroke-width:1;color:var(--ink-300);"></i>
+          </div>
+          <h3>Nenhum produto encontrado</h3>
+          <p>Tente buscar por outro termo ou veja todos os produtos.</p>
           <a href="{% url 'produtos' %}" class="btn btn--outline">Ver todos os produtos</a>
         </div>
         {% endif %}
@@ -169,5 +182,21 @@
 
   </div>
 </div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  lucide.createIcons();
+
+  const cards = document.querySelectorAll('.pcard');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('pcard--visible'), i * 40);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  cards.forEach(c => obs.observe(c));
+</script>
 
 {% endblock %}

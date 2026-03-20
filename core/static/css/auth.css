@@ -1,101 +1,67 @@
+/* ══════════════════════════════════════════════════════════════════
+   auth.css — Login, Cadastro, Contato
+══════════════════════════════════════════════════════════════════ */
 .auth-wrapper {
   min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: calc(var(--navbar-h) + 2rem) var(--space-lg) var(--space-3xl);
-  background: linear-gradient(145deg, #f0f4ff 0%, #e6efff 100%);
+  display: grid;
+  place-items: center;
+  padding: calc(var(--navbar-h) + var(--s8)) var(--s6) var(--s16);
+  background: var(--ink-30);
+  background-image:
+    linear-gradient(var(--ink-100) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ink-100) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
-
 .auth-card {
   width: 100%;
-  max-width: 440px;
-  background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-2xl);
+  max-width: 420px;
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-2xl);
+  padding: var(--s10) var(--s8);
   box-shadow: var(--shadow-xl);
 }
-
-.auth-card__header {
-  text-align: center;
-  margin-bottom: var(--space-xl);
-}
+.auth-card__header { text-align: center; margin-bottom: var(--s8); }
 .auth-card__icon {
-  display: block;
-  font-size: 2.5rem;
-  color: var(--color-primary);
-  margin-bottom: var(--space-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--blue);
+  border-radius: var(--r-lg);
+  font-size: 1.1rem;
+  margin-bottom: var(--s4);
 }
 .auth-card__header h1 {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: var(--text-2xl);
   font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: var(--space-xs);
+  letter-spacing: -0.03em;
+  color: var(--ink-900);
+  margin-bottom: var(--s1);
 }
-.auth-card__header p {
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-}
+.auth-card__header p { color: var(--ink-400); font-size: var(--text-sm); }
 
 /* Mensagens */
-.auth-messages { margin-bottom: var(--space-lg); }
+.auth-messages { margin-bottom: var(--s5); display: flex; flex-direction: column; gap: var(--s2); }
 .auth-message {
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
+  padding: 0.65rem 0.875rem;
+  border-radius: var(--r-md);
+  font-size: var(--text-sm);
   font-weight: 500;
+  border: 1px solid;
 }
-.auth-message--success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-.auth-message--error   { background: #fff0f3; color: #9f1239; border: 1px solid #fecdd3; }
-.auth-message--info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+.auth-message--success { background: var(--green-light);  color: var(--green);  border-color: var(--green-border); }
+.auth-message--error   { background: var(--red-light);   color: var(--red);    border-color: var(--red-border);   }
+.auth-message--info    { background: var(--blue-light);  color: var(--blue);   border-color: var(--blue-mid);     }
 
 /* Form */
-.auth-form { display: flex; flex-direction: column; gap: var(--space-md); }
+.auth-form { display: flex; flex-direction: column; gap: var(--s4); }
+.auth-card__footer { text-align: center; margin-top: var(--s5); font-size: var(--text-sm); color: var(--ink-400); }
+.auth-card__footer a { color: var(--blue); font-weight: 500; transition: opacity var(--t-fast); }
+.auth-card__footer a:hover { opacity: .7; }
 
-.form-group { display: flex; flex-direction: column; gap: var(--space-xs); }
-
-.form-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.form-input {
-  width: 100%;
-  padding: 0.7rem 1rem;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  color: var(--color-text);
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-md);
-  outline: none;
-  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
-}
-.form-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(26, 76, 255, .12);
-  background: var(--color-white);
-}
-
-.form-error {
-  font-size: 0.78rem;
-  color: var(--color-danger);
-  font-weight: 500;
-}
-
-.btn--full { width: 100%; justify-content: center; }
-
-.auth-card__footer {
-  text-align: center;
-  margin-top: var(--space-lg);
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-}
-.auth-card__footer a {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-.auth-card__footer a:hover { text-decoration: underline; }
+/* Divisor */
+.auth-divider { display: flex; align-items: center; gap: var(--s3); color: var(--ink-200); font-size: var(--text-xs); margin-block: var(--s1); }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--ink-100); }

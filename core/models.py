@@ -13,9 +13,16 @@ class Usuario(AbstractUser):
 class Categoria(models.Model):
     nome    = models.CharField(max_length=100, unique=True)
     slug    = models.SlugField(max_length=120, unique=True, blank=True)
-    icone   = models.CharField(max_length=10, blank=True)   # emoji: 🎓 📚 ⚙️
+    icone   = models.CharField(max_length=10, blank=True)
     ativa   = models.BooleanField(default=True)
-    ordem   = models.PositiveIntegerField(default=0)        # controla a ordem de exibição
+    ordem   = models.PositiveIntegerField(default=0) 
+
+    icone_lucide = models.CharField(
+        max_length=50,
+        blank=True,
+        default='folder',
+        help_text='Nome do ícone Lucide. Ex: graduation-cap, book-open, cpu'
+)
 
     class Meta:
         ordering = ['ordem', 'nome']
@@ -51,10 +58,9 @@ class Produto(models.Model):
     status         = models.CharField(max_length=20, choices=Status.choices, default=Status.RASCUNHO)
     destaque       = models.BooleanField(default=False)
 
-    # ← novo: vínculo com Categoria
     categoria      = models.ForeignKey(
         Categoria,
-        on_delete=models.SET_NULL,   # se a categoria for deletada, o produto não some
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='produtos'
@@ -133,11 +139,10 @@ class ItemPedido(models.Model):
     )
     produto  = models.ForeignKey(
         Produto,
-        on_delete=models.PROTECT,  # não deixa deletar produto com pedido
+        on_delete=models.PROTECT,
         related_name='itens_pedido'
     )
-    # Guardamos o preço no momento da compra
-    # (o preço do produto pode mudar depois)
+
     preco    = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
@@ -146,3 +151,4 @@ class ItemPedido(models.Model):
 
     def __str__(self):
         return f'{self.produto.nome} — Pedido #{self.pedido.id}'
+
