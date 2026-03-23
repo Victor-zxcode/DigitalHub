@@ -1,0 +1,421 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Como Funciona — DigitalHub{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/como_funciona.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<header class="navbar" id="navbar">
+  <div class="navbar__inner">
+    <a href="{% url 'home' %}" class="navbar__logo">
+      <span class="navbar__logo-icon">
+        <i data-lucide="layers" style="width:14px;height:14px;stroke-width:2;color:white;"></i>
+      </span>
+      <span class="navbar__logo-text">DigitalHub</span>
+    </a>
+    <nav class="navbar__links" id="navLinks">
+      <a href="{% url 'home' %}"           class="navbar__link">Home</a>
+      <a href="{% url 'produtos' %}"       class="navbar__link">Produtos</a>
+      <a href="{% url 'categorias' %}"     class="navbar__link">Categorias</a>
+      <a href="{% url 'ofertas' %}"        class="navbar__link">Ofertas</a>
+      <a href="{% url 'como_funciona' %}"  class="navbar__link navbar__link--active">Como funciona</a>
+      <a href="{% url 'contato' %}"        class="navbar__link">Contato</a>
+    </nav>
+    <div class="navbar__actions">
+      {% if user.is_authenticated %}
+        <a href="{% url 'minha_conta' %}" class="btn btn--ghost">{{ user.username }}</a>
+        <a href="{% url 'logout' %}"      class="btn btn--primary">Sair</a>
+      {% else %}
+        <a href="{% url 'login' %}"    class="btn btn--ghost">Entrar</a>
+        <a href="{% url 'cadastro' %}" class="btn btn--primary">Cadastrar</a>
+      {% endif %}
+    </div>
+    <button class="navbar__hamburger" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO DA PÁGINA
+═══════════════════════════════════════════ -->
+<section class="cf-hero">
+  <div class="cf-hero__bg"></div>
+  <div class="container">
+    <div class="cf-hero__inner">
+      <div class="cf-hero__texto">
+        <span class="cf-label">Simples assim</span>
+        <h1 class="cf-hero__titulo">
+          Do cadastro ao<br>
+          acesso em <em>2 minutos</em>
+        </h1>
+        <p class="cf-hero__sub">
+          A DigitalHub foi feita para ser intuitiva. Sem burocracia, sem complicação — você encontra, compra e acessa seu produto digital na hora.
+        </p>
+        <div class="cf-hero__acoes">
+          <a href="{% url 'cadastro' %}" class="btn btn--primary btn--lg">
+            Criar conta grátis
+            <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
+          </a>
+          <a href="{% url 'produtos' %}" class="btn btn--ghost btn--lg">
+            Ver produtos
+          </a>
+        </div>
+      </div>
+
+      <!-- Animação ilustrativa -->
+      <div class="cf-hero__animacao">
+        <div class="cf-anim">
+
+          <!-- Card flutuante do produto -->
+          <div class="cf-anim__card">
+            <div class="cf-anim__card-img">
+              <i data-lucide="graduation-cap" class="cf-anim__card-icon"></i>
+            </div>
+            <div class="cf-anim__card-info">
+              <span class="cf-anim__card-cat">Curso</span>
+              <p class="cf-anim__card-nome">Python do Zero ao Avançado</p>
+              <strong class="cf-anim__card-preco">R$ 97,00</strong>
+            </div>
+          </div>
+
+          <!-- Linha de progresso -->
+          <div class="cf-anim__progress">
+            <div class="cf-anim__progress-label">Processando pagamento...</div>
+            <div class="cf-anim__progress-bar">
+              <div class="cf-anim__progress-fill"></div>
+            </div>
+          </div>
+
+          <!-- Confirmação -->
+          <div class="cf-anim__confirm">
+            <div class="cf-anim__confirm-icon">
+              <i data-lucide="check" style="width:20px;height:20px;stroke-width:2.5;color:white;"></i>
+            </div>
+            <div>
+              <p class="cf-anim__confirm-titulo">Acesso liberado!</p>
+              <p class="cf-anim__confirm-sub">E-mail de confirmação enviado</p>
+            </div>
+          </div>
+
+          <!-- Notificação flutuante -->
+          <div class="cf-anim__notif">
+            <i data-lucide="mail" style="width:14px;height:14px;stroke-width:2;color:var(--blue);"></i>
+            <span>E-mail enviado para você</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     3 PASSOS
+═══════════════════════════════════════════ -->
+<section class="cf-passos">
+  <div class="container">
+
+    <div class="cf-section-header">
+      <span class="cf-label">Passo a passo</span>
+      <h2 class="cf-section-titulo">Como funciona</h2>
+      <p class="cf-section-sub">Três etapas simples e você já tem acesso ao seu produto digital.</p>
+    </div>
+
+    <div class="cf-passos__grid">
+
+      <!-- Passo 1 -->
+      <div class="cf-passo cf-passo--1">
+        <div class="cf-passo__num">01</div>
+        <div class="cf-passo__icone-wrap">
+          <i data-lucide="user-plus" class="cf-passo__icone"></i>
+        </div>
+        <div class="cf-passo__conteudo">
+          <h3 class="cf-passo__titulo">Crie sua conta grátis</h3>
+          <p class="cf-passo__desc">
+            Preencha nome, e-mail e senha. O cadastro é gratuito e leva menos de 30 segundos. Nenhum cartão de crédito necessário para começar a explorar.
+          </p>
+          <ul class="cf-passo__lista">
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Cadastro 100% gratuito
+            </li>
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Sem cartão de crédito
+            </li>
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Acesso imediato ao catálogo
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Divisor -->
+      <div class="cf-passos__divisor">
+        <div class="cf-passos__linha"></div>
+        <i data-lucide="arrow-down" class="cf-passos__seta"></i>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="cf-passo cf-passo--2">
+        <div class="cf-passo__num">02</div>
+        <div class="cf-passo__icone-wrap">
+          <i data-lucide="search" class="cf-passo__icone"></i>
+        </div>
+        <div class="cf-passo__conteudo">
+          <h3 class="cf-passo__titulo">Encontre o produto ideal</h3>
+          <p class="cf-passo__desc">
+            Navegue por categorias, use a busca ou filtre por preço. Cada produto tem descrição completa para você decidir com segurança.
+          </p>
+          <ul class="cf-passo__lista">
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Centenas de produtos digitais
+            </li>
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Filtros por categoria e preço
+            </li>
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Descrições detalhadas
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Divisor -->
+      <div class="cf-passos__divisor">
+        <div class="cf-passos__linha"></div>
+        <i data-lucide="arrow-down" class="cf-passos__seta"></i>
+      </div>
+
+      <!-- Passo 3 -->
+      <div class="cf-passo cf-passo--3">
+        <div class="cf-passo__num">03</div>
+        <div class="cf-passo__icone-wrap">
+          <i data-lucide="zap" class="cf-passo__icone"></i>
+        </div>
+        <div class="cf-passo__conteudo">
+          <h3 class="cf-passo__titulo">Compre e acesse na hora</h3>
+          <p class="cf-passo__desc">
+            Após confirmar a compra, o acesso é liberado instantaneamente. Você recebe um e-mail de confirmação com todos os detalhes do pedido.
+          </p>
+          <ul class="cf-passo__lista">
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Acesso imediato após a compra
+            </li>
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              E-mail de confirmação automático
+            </li>
+            <li>
+              <i data-lucide="check-circle" class="cf-check-icon"></i>
+              Histórico de pedidos na sua conta
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     GARANTIAS E SEGURANÇA
+═══════════════════════════════════════════ -->
+<section class="cf-garantias">
+  <div class="container">
+
+    <div class="cf-section-header">
+      <span class="cf-label">Sua proteção</span>
+      <h2 class="cf-section-titulo">Compre com total segurança</h2>
+      <p class="cf-section-sub">Cada detalhe foi pensado para que você compre com confiança.</p>
+    </div>
+
+    <div class="cf-garantias__grid">
+
+      <div class="cf-garantia-card">
+        <div class="cf-garantia-card__icone cf-garantia-card__icone--green">
+          <i data-lucide="shield-check" class="cf-garantia-card__lucide"></i>
+        </div>
+        <h3 class="cf-garantia-card__titulo">Garantia de 7 dias</h3>
+        <p class="cf-garantia-card__desc">
+          Não ficou satisfeito? Devolvemos 100% do seu dinheiro em até 7 dias após a compra, sem perguntas.
+        </p>
+      </div>
+
+      <div class="cf-garantia-card">
+        <div class="cf-garantia-card__icone cf-garantia-card__icone--blue">
+          <i data-lucide="lock" class="cf-garantia-card__lucide"></i>
+        </div>
+        <h3 class="cf-garantia-card__titulo">Pagamento seguro</h3>
+        <p class="cf-garantia-card__desc">
+          Seus dados financeiros são protegidos com criptografia. Nunca armazenamos informações do seu cartão.
+        </p>
+      </div>
+
+      <div class="cf-garantia-card">
+        <div class="cf-garantia-card__icone cf-garantia-card__icone--purple">
+          <i data-lucide="zap" class="cf-garantia-card__lucide"></i>
+        </div>
+        <h3 class="cf-garantia-card__titulo">Acesso imediato</h3>
+        <p class="cf-garantia-card__desc">
+          Assim que a compra é confirmada, o produto fica disponível na sua conta. Sem espera, sem burocracia.
+        </p>
+      </div>
+
+      <div class="cf-garantia-card">
+        <div class="cf-garantia-card__icone cf-garantia-card__icone--amber">
+          <i data-lucide="headphones" class="cf-garantia-card__lucide"></i>
+        </div>
+        <h3 class="cf-garantia-card__titulo">Suporte dedicado</h3>
+        <p class="cf-garantia-card__desc">
+          Nossa equipe responde em até 24 horas. Dúvidas sobre o produto ou a compra — estamos aqui para ajudar.
+        </p>
+      </div>
+
+      <div class="cf-garantia-card">
+        <div class="cf-garantia-card__icone cf-garantia-card__icone--blue">
+          <i data-lucide="mail" class="cf-garantia-card__lucide"></i>
+        </div>
+        <h3 class="cf-garantia-card__titulo">Confirmação por e-mail</h3>
+        <p class="cf-garantia-card__desc">
+          Você recebe um e-mail detalhado após cada compra com o resumo do pedido e link de acesso direto.
+        </p>
+      </div>
+
+      <div class="cf-garantia-card">
+        <div class="cf-garantia-card__icone cf-garantia-card__icone--green">
+          <i data-lucide="user-check" class="cf-garantia-card__lucide"></i>
+        </div>
+        <h3 class="cf-garantia-card__titulo">Conta protegida</h3>
+        <p class="cf-garantia-card__desc">
+          Seu histórico de pedidos fica salvo na sua conta. Acesse seus produtos a qualquer momento, de qualquer dispositivo.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     CTA FINAL
+═══════════════════════════════════════════ -->
+<section class="cf-cta">
+  <div class="container">
+    <div class="cf-cta__inner">
+      <h2 class="cf-cta__titulo">Pronto para começar?</h2>
+      <p class="cf-cta__sub">
+        Crie sua conta gratuitamente e explore centenas de produtos digitais agora mesmo.
+      </p>
+      <div class="cf-cta__acoes">
+        <a href="{% url 'cadastro' %}" class="btn btn--white btn--lg">
+          Criar conta grátis
+          <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
+        </a>
+        <a href="{% url 'produtos' %}" class="btn btn--ghost-white btn--lg">
+          Ver produtos
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="{% url 'home' %}" class="navbar__logo" style="margin-bottom:var(--s4);display:inline-flex;">
+          <span class="navbar__logo-icon">
+            <i data-lucide="layers" style="width:14px;height:14px;stroke-width:2;color:white;"></i>
+          </span>
+          <span class="navbar__logo-text" style="color:white;">DigitalHub</span>
+        </a>
+        <p>O marketplace de produtos digitais feito para quem cria e para quem aprende.</p>
+      </div>
+      <div class="footer__links-group">
+        <h4>Plataforma</h4>
+        <a href="{% url 'produtos' %}">Produtos</a>
+        <a href="{% url 'categorias' %}">Categorias</a>
+        <a href="{% url 'ofertas' %}">Ofertas</a>
+      </div>
+      <div class="footer__links-group">
+        <h4>Empresa</h4>
+        <a href="#">Sobre nós</a>
+        <a href="{% url 'contato' %}">Contato</a>
+        <a href="{% url 'como_funciona' %}">Como funciona</a>
+      </div>
+      <div class="footer__links-group">
+        <h4>Legal</h4>
+        <a href="#">Privacidade</a>
+        <a href="#">Termos de uso</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© {% now "Y" %} DigitalHub. Todos os direitos reservados.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  lucide.createIcons();
+
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('navbar--scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  const hamburger = document.getElementById('hamburgerBtn');
+  const navLinks  = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('navbar__links--open');
+    hamburger.classList.toggle('navbar__hamburger--open');
+  });
+
+  // Entrada animada dos passos
+  const passos = document.querySelectorAll('.cf-passo');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('cf-passo--visible'), i * 150);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  passos.forEach(p => obs.observe(p));
+
+  // Entrada animada das garantias
+  const garantias = document.querySelectorAll('.cf-garantia-card');
+  const obs2 = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('cf-garantia-card--visible'), i * 80);
+        obs2.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  garantias.forEach(g => obs2.observe(g));
+</script>
+
+{% endblock %}

@@ -3,6 +3,9 @@ from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
 
+
+
+
 def _html_confirmacao(pedido, usuario):
     itens_html = ''
     for item in pedido.itens.all():
@@ -221,3 +224,5 @@ def enviar_email_boas_vindas(usuario):
     )
     email.attach_alternative(html, 'text/html')
     email.send(fail_silently=False)
+
+

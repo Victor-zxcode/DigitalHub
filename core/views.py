@@ -241,3 +241,7 @@ def minha_conta(request):
         'usuario': request.user,
         'pedidos': pedidos,
     })
+
+
+def como_funciona(request):
+    return render(request, 'como_funciona.html', {})

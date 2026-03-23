@@ -27,6 +27,7 @@
       <a href="{% url 'produtos' %}"   class="navbar__link">Produtos</a>
       <a href="{% url 'categorias' %}" class="navbar__link">Categorias</a>
       <a href="{% url 'ofertas' %}"    class="navbar__link">Ofertas</a>
+      <a href="{% url 'como_funciona' %}"  class="navbar__link">Como funciona</a>
       <a href="{% url 'contato' %}"    class="navbar__link">Contato</a>
     </nav>
 
@@ -73,13 +74,17 @@
     </p>
 
     <div class="hero__cta">
-      <a href="{% url 'cadastro' %}" class="btn btn--primary btn--lg">
-        Começar agora
-        <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
-      </a>
-      <a href="{% url 'produtos' %}" class="btn btn--ghost btn--lg">
-        Ver produtos
-      </a>
+      {% if user.is_authenticated %}
+<a href="{% url 'produtos' %}" class="btn btn--primary btn--lg">
+  Explorar produtos
+  <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
+</a>
+{% else %}
+<a href="{% url 'cadastro' %}" class="btn btn--primary btn--lg">
+  Começar agora
+  <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
+</a>
+{% endif %}
     </div>
 
     <div class="hero__stats">
@@ -239,107 +244,6 @@
   </div>
 </section>
 
-
-<!-- ═══════════════════════════════════════════
-     COMO FUNCIONA
-═══════════════════════════════════════════ -->
-<section class="como-funciona">
-  <div class="container">
-
-    <div class="como-funciona__header">
-      <div class="section-header__label">Simples assim</div>
-      <h2 class="como-funciona__titulo">Como funciona</h2>
-      <p class="como-funciona__sub">
-        Do cadastro ao acesso ao produto em menos de 2 minutos.
-      </p>
-    </div>
-
-    <div class="como-funciona__grid">
-
-      <!-- Passo 1 -->
-      <div class="passo passo--1">
-        <div class="passo__topo">
-          <span class="passo__numero">01</span>
-          <div class="passo__icone">
-            <i data-lucide="user-plus" class="passo__lucide"></i>
-          </div>
-        </div>
-        <h3 class="passo__titulo">Crie sua conta</h3>
-        <p class="passo__desc">
-          Cadastre-se gratuitamente em segundos. Nenhum cartão de crédito necessário para começar a explorar.
-        </p>
-        <a href="{% url 'cadastro' %}" class="passo__link">
-          Criar conta grátis
-          <i data-lucide="arrow-right" style="width:13px;height:13px;stroke-width:2;"></i>
-        </a>
-      </div>
-
-      <!-- Seta -->
-      <div class="passo__seta">
-        <i data-lucide="arrow-right" class="passo__seta-icon"></i>
-      </div>
-
-      <!-- Passo 2 -->
-      <div class="passo passo--2">
-        <div class="passo__topo">
-          <span class="passo__numero">02</span>
-          <div class="passo__icone">
-            <i data-lucide="search" class="passo__lucide"></i>
-          </div>
-        </div>
-        <h3 class="passo__titulo">Encontre o produto ideal</h3>
-        <p class="passo__desc">
-          Navegue por centenas de cursos, e-books e templates. Filtre por categoria e encontre o que precisa.
-        </p>
-        <a href="{% url 'produtos' %}" class="passo__link">
-          Ver produtos
-          <i data-lucide="arrow-right" style="width:13px;height:13px;stroke-width:2;"></i>
-        </a>
-      </div>
-
-      <!-- Seta -->
-      <div class="passo__seta">
-        <i data-lucide="arrow-right" class="passo__seta-icon"></i>
-      </div>
-
-      <!-- Passo 3 -->
-      <div class="passo passo--3">
-        <div class="passo__topo">
-          <span class="passo__numero">03</span>
-          <div class="passo__icone">
-            <i data-lucide="zap" class="passo__lucide"></i>
-          </div>
-        </div>
-        <h3 class="passo__titulo">Acesse na hora</h3>
-        <p class="passo__desc">
-          Após a compra, acesso imediato ao conteúdo e confirmação por e-mail. Rápido, simples e seguro.
-        </p>
-        <a href="{% url 'ofertas' %}" class="passo__link">
-          Ver ofertas
-          <i data-lucide="arrow-right" style="width:13px;height:13px;stroke-width:2;"></i>
-        </a>
-      </div>
-
-    </div>
-
-    <!-- Rodapé da seção -->
-    <div class="como-funciona__rodape">
-      <div class="como-funciona__garantia">
-        <i data-lucide="shield-check" class="como-funciona__garantia-icon"></i>
-        <span>Garantia de 7 dias em todos os produtos</span>
-      </div>
-      <div class="como-funciona__garantia">
-        <i data-lucide="lock" class="como-funciona__garantia-icon"></i>
-        <span>Pagamento 100% seguro</span>
-      </div>
-      <div class="como-funciona__garantia">
-        <i data-lucide="headphones" class="como-funciona__garantia-icon"></i>
-        <span>Suporte dedicado</span>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 
 <!-- ═══════════════════════════════════════════

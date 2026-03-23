@@ -322,3 +322,51 @@ button { font-family: inherit; cursor: pointer; }
   0%, 100% { opacity: 1; }
   50%       { opacity: .4; }
 }
+
+
+/* ── Botão flutuante Home ─────────────────────────────────────── */
+.btn-home {
+  position: fixed;
+  bottom: var(--s8);
+  right: var(--s8);
+  z-index: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 0.6rem 1rem 0.6rem 0.75rem;
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-full);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink-600);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    transform var(--t-base) var(--ease-spring),
+    box-shadow var(--t-fast);
+}
+.btn-home::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  flex-shrink: 0;
+}
+.btn-home:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,80,230,.3);
+}
+.btn-home:hover::before {
+  background: rgba(255,255,255,.6);
+}
+.btn-home:active { transform: translateY(0); }
