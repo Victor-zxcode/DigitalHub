@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compra confirmada</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f7ff;font-family:Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f7ff;padding:40px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Card principal -->
+        <table width="560" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);">
+
+          <!-- Header azul -->
+          <tr>
+            <td align="center" style="background-color:#0050e6;padding:36px 40px;">
+              <p style="margin:0 0 8px 0;font-size:2.2rem;">✅</p>
+              <p style="margin:0;font-size:1.2rem;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">DigitalHub</p>
+            </td>
+          </tr>
+
+          <!-- Corpo -->
+          <tr>
+            <td style="padding:40px;">
+
+              <h1 style="margin:0 0 12px 0;font-size:1.5rem;font-weight:700;color:#0d0d12;letter-spacing:-0.02em;">Compra confirmada!</h1>
+              <p style="margin:0 0 28px 0;font-size:0.95rem;color:#6e6e82;line-height:1.7;">
+                Olá, <strong style="color:#18181f;">{{ usuario.first_name|default:usuario.username }}</strong>!
+                Seu pedido foi processado com sucesso. Confira os detalhes abaixo.
+              </p>
+
+              <!-- Box do pedido -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f8fc;border:1px solid #e4e4ee;border-radius:12px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:20px 24px 8px 24px;">
+                    <p style="margin:0 0 16px 0;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:#9898aa;">
+                      Pedido #{{ pedido.id }} — {{ pedido.criado_em|date:"d/m/Y" }}
+                    </p>
+                  </td>
+                </tr>
+
+                {% for item in pedido.itens.all %}
+                <tr>
+                  <td style="padding:8px 24px;border-top:1px solid #e4e4ee;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:0.9rem;font-weight:500;color:#18181f;">{{ item.produto.nome }}</td>
+                        <td align="right" style="font-size:0.9rem;font-weight:600;color:#0050e6;white-space:nowrap;">R$ {{ item.preco|floatformat:2 }}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                {% endfor %}
+
+                <!-- Total -->
+                <tr>
+                  <td style="padding:16px 24px;border-top:2px solid #e4e4ee;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:0.9rem;font-weight:600;color:#18181f;">Total pago</td>
+                        <td align="right" style="font-size:1.2rem;font-weight:700;color:#0d0d12;">R$ {{ pedido.total|floatformat:2 }}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+
+              <!-- Garantia -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:12px 16px;font-size:0.85rem;color:#16a34a;font-weight:500;">
+                    🛡️ Garantia de 7 dias — se não ficar satisfeito, devolvemos seu dinheiro.
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Botão -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr>
+                  <td align="center" style="background-color:#0050e6;border-radius:8px;">
+                    <a href="{{ url_minha_conta }}" style="display:inline-block;padding:14px 28px;font-size:0.9rem;font-weight:600;color:#ffffff;text-decoration:none;">
+                      Acessar minha conta →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;font-size:0.88rem;color:#6e6e82;line-height:1.7;">
+                Em caso de dúvidas, entre em contato pelo e-mail
+                <a href="mailto:contato@digitalhub.com" style="color:#0050e6;text-decoration:none;">contato@digitalhub.com</a>.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color:#f8f8fc;border-top:1px solid #e4e4ee;padding:24px 40px;">
+              <p style="margin:0;font-size:0.78rem;color:#9898aa;line-height:1.6;">
+                Você recebeu este e-mail porque realizou uma compra na DigitalHub.<br>
+                <a href="{{ url_home }}" style="color:#0050e6;text-decoration:none;">digitalhub.com</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- fim card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

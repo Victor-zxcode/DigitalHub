@@ -15,15 +15,15 @@
     <!-- Breadcrumb -->
     <nav class="breadcrumb">
       <a href="{% url 'home' %}">Home</a>
-      <span>/</span>
+      <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--ink-300);"></i>
       <a href="{% url 'produtos' %}">Produtos</a>
       {% if produto.categoria %}
-      <span>/</span>
+      <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--ink-300);"></i>
       <a href="{% url 'categoria_detalhe' produto.categoria.slug %}">
         {{ produto.categoria.nome }}
       </a>
       {% endif %}
-      <span>/</span>
+      <i data-lucide="chevron-right" style="width:13px;height:13px;color:var(--ink-300);"></i>
       <span>{{ produto.nome }}</span>
     </nav>
 
@@ -36,7 +36,7 @@
           <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
         {% else %}
           <div class="detalhe-imagem__placeholder">
-            <span>{{ produto.categoria.icone|default:"📦" }}</span>
+            <i data-lucide="package" style="width:64px;height:64px;stroke-width:1;color:var(--ink-300);"></i>
           </div>
         {% endif %}
       </div>
@@ -46,7 +46,7 @@
 
         {% if produto.categoria %}
         <span class="detalhe-info__categoria">
-          {{ produto.categoria.icone }} {{ produto.categoria.nome }}
+          {{ produto.categoria.nome }}
         </span>
         {% endif %}
 
@@ -69,15 +69,35 @@
           </div>
         </div>
 
-        <!-- Botões -->
+        <!-- Botão comprar -->
         <div class="detalhe-acoes">
-          
-            href="{% url 'comprar_produto' produto.id %}"
-            class="btn btn--primary btn--lg"
-          >
+          <a href="{% url 'comprar_produto' produto.id %}" class="btn btn--primary btn--lg">
             Comprar agora
+            <i data-lucide="arrow-right" style="width:16px;height:16px;stroke-width:2;"></i>
+          </a>
+          <a href="{% url 'produtos' %}" class="btn btn--ghost btn--lg">
+            Ver mais produtos
           </a>
         </div>
+
+        <!-- Garantias -->
+        <div class="detalhe-garantias">
+          <div class="detalhe-garantia">
+            <i data-lucide="shield-check" class="detalhe-garantia__icon"></i>
+            <span>Compra segura</span>
+          </div>
+          <div class="detalhe-garantia">
+            <i data-lucide="download" class="detalhe-garantia__icon"></i>
+            <span>Acesso imediato</span>
+          </div>
+          <div class="detalhe-garantia">
+            <i data-lucide="refresh-ccw" class="detalhe-garantia__icon"></i>
+            <span>7 dias de garantia</span>
+          </div>
+        </div>
+
+        <!-- Divisor -->
+        <hr class="detalhe-divisor">
 
         <!-- Descrição -->
         <div class="detalhe-descricao">
@@ -100,7 +120,7 @@
               <img src="{{ rel.imagem.url }}" alt="{{ rel.nome }}">
             {% else %}
               <div class="rel-card__placeholder">
-                {{ rel.categoria.icone|default:"📦" }}
+                <i data-lucide="package" style="width:28px;height:28px;stroke-width:1;color:var(--ink-300);"></i>
               </div>
             {% endif %}
           </div>
@@ -116,5 +136,8 @@
 
   </div>
 </div>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
 
 {% endblock %}

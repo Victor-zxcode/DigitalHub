@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bem-vindo à DigitalHub</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f7ff;font-family:Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f5f7ff;padding:40px 0;">
+    <tr>
+      <td align="center">
+
+        <!-- Card principal -->
+        <table width="560" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);">
+
+          <!-- Header escuro -->
+          <tr>
+            <td align="center" style="background-color:#0d0d12;padding:36px 40px;">
+              <p style="margin:0 0 8px 0;font-size:2.2rem;">👋</p>
+              <p style="margin:0;font-size:1.2rem;font-weight:700;color:#ffffff;letter-spacing:-0.02em;">DigitalHub</p>
+            </td>
+          </tr>
+
+          <!-- Corpo -->
+          <tr>
+            <td style="padding:40px;">
+
+              <h1 style="margin:0 0 12px 0;font-size:1.5rem;font-weight:700;color:#0d0d12;letter-spacing:-0.02em;">
+                Bem-vindo, {{ usuario.first_name|default:usuario.username }}!
+              </h1>
+              <p style="margin:0 0 28px 0;font-size:0.95rem;color:#6e6e82;line-height:1.7;">
+                Sua conta foi criada com sucesso. Agora você tem acesso a milhares de produtos digitais criados por especialistas.
+              </p>
+
+              <!-- Recurso 1 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f8fc;border:1px solid #e4e4ee;border-radius:10px;margin-bottom:10px;">
+                <tr>
+                  <td style="padding:14px 16px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:1.3rem;padding-right:12px;vertical-align:top;">🎓</td>
+                        <td>
+                          <p style="margin:0 0 2px 0;font-size:0.875rem;font-weight:600;color:#18181f;">Cursos completos</p>
+                          <p style="margin:0;font-size:0.8rem;color:#9898aa;line-height:1.5;">Aprenda com instrutores especializados em diversas áreas.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Recurso 2 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f8fc;border:1px solid #e4e4ee;border-radius:10px;margin-bottom:10px;">
+                <tr>
+                  <td style="padding:14px 16px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:1.3rem;padding-right:12px;vertical-align:top;">📚</td>
+                        <td>
+                          <p style="margin:0 0 2px 0;font-size:0.875rem;font-weight:600;color:#18181f;">E-books e templates</p>
+                          <p style="margin:0;font-size:0.8rem;color:#9898aa;line-height:1.5;">Materiais práticos para acelerar seu crescimento.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Recurso 3 -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8f8fc;border:1px solid #e4e4ee;border-radius:10px;margin-bottom:28px;">
+                <tr>
+                  <td style="padding:14px 16px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="font-size:1.3rem;padding-right:12px;vertical-align:top;">⚡</td>
+                        <td>
+                          <p style="margin:0 0 2px 0;font-size:0.875rem;font-weight:600;color:#18181f;">Acesso imediato</p>
+                          <p style="margin:0;font-size:0.8rem;color:#9898aa;line-height:1.5;">Após a compra, acesse seus produtos instantaneamente.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Botão -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+                <tr>
+                  <td align="center" style="background-color:#0050e6;border-radius:8px;">
+                    <a href="{{ url_produtos }}" style="display:inline-block;padding:14px 28px;font-size:0.9rem;font-weight:600;color:#ffffff;text-decoration:none;">
+                      Explorar produtos →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0;font-size:0.88rem;color:#6e6e82;line-height:1.7;">
+                Ficou com alguma dúvida? Fale conosco em
+                <a href="mailto:contato@digitalhub.com" style="color:#0050e6;text-decoration:none;">contato@digitalhub.com</a>.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color:#f8f8fc;border-top:1px solid #e4e4ee;padding:24px 40px;">
+              <p style="margin:0;font-size:0.78rem;color:#9898aa;line-height:1.6;">
+                Você recebeu este e-mail porque criou uma conta na DigitalHub.<br>
+                <a href="{{ url_home }}" style="color:#0050e6;text-decoration:none;">digitalhub.com</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- fim card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

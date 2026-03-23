@@ -6,6 +6,7 @@ from .models import Produto, Categoria, Pedido, ItemPedido
 from .forms import FormCadastro, FormLogin, FormContato
 from django.db import models
 from django.core.paginator import Paginator
+from .utils import enviar_email_confirmacao_compra, enviar_email_boas_vindas
 
 
 
@@ -126,13 +127,19 @@ def cadastro(request):
         if form.is_valid():
             usuario = form.save()
             login(request, usuario)
+
+            # ── Envia e-mail de boas-vindas ──────────────────────
+            try:
+                enviar_email_boas_vindas(usuario)
+            except Exception as e:
+                print(f'Erro ao enviar e-mail: {e}')
+
             messages.success(request, f'Bem-vindo, {usuario.username}!')
             return redirect('home')
         else:
             messages.error(request, 'Corrija os erros abaixo.')
 
     return render(request, 'cadastro.html', {'form': form})
-
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -188,7 +195,6 @@ def confirmar_compra(request, produto_id):
 
     produto = get_object_or_404(Produto, id=produto_id, status='ativo')
 
-    # Evita compra duplicada
     ja_comprou = ItemPedido.objects.filter(
         pedido__usuario=request.user,
         pedido__status='pago',
@@ -199,10 +205,9 @@ def confirmar_compra(request, produto_id):
         messages.warning(request, 'Você já adquiriu este produto.')
         return redirect('minha_conta')
 
-    # Cria o pedido
     pedido = Pedido.objects.create(
         usuario=request.user,
-        status=Pedido.Status.PAGO,   # simulação: em produção viria do gateway
+        status=Pedido.Status.PAGO,
         total=produto.preco
     )
     ItemPedido.objects.create(
@@ -210,6 +215,12 @@ def confirmar_compra(request, produto_id):
         produto=produto,
         preco=produto.preco
     )
+
+    # ── Envia e-mail de confirmação ──────────────────────────────
+    try:
+        enviar_email_confirmacao_compra(pedido)
+    except Exception as e:
+        print(f'Erro ao enviar e-mail: {e}')  # não quebra o fluxo
 
     messages.success(request, f'Compra de "{produto.nome}" realizada com sucesso!')
     return redirect('pedido_confirmado', pedido_id=pedido.id)
