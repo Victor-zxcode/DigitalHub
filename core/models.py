@@ -58,14 +58,7 @@ class Produto(models.Model):
     status         = models.CharField(max_length=20, choices=Status.choices, default=Status.RASCUNHO)
     destaque       = models.BooleanField(default=False)
 
-    categoria      = models.ForeignKey(
-        Categoria,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='produtos'
-    )
-
+    categoria      = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='produtos')
     criado_em      = models.DateTimeField(auto_now_add=True)
     atualizado_em  = models.DateTimeField(auto_now=True)
 
@@ -104,18 +97,10 @@ class Pedido(models.Model):
         PAGO       = 'pago',       'Pago'
         CANCELADO  = 'cancelado',  'Cancelado'
 
-    usuario    = models.ForeignKey(
-        Usuario,
-        on_delete=models.CASCADE,
-        related_name='pedidos'
-    )
-    status     = models.CharField(
-        max_length=20,
-        choices=Status.choices,
-        default=Status.PENDENTE
-    )
-    total      = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    criado_em  = models.DateTimeField(auto_now_add=True)
+    usuario       = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos')
+    status        = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDENTE)
+    total         = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    criado_em     = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -132,17 +117,8 @@ class Pedido(models.Model):
 
 
 class ItemPedido(models.Model):
-    pedido   = models.ForeignKey(
-        Pedido,
-        on_delete=models.CASCADE,
-        related_name='itens'
-    )
-    produto  = models.ForeignKey(
-        Produto,
-        on_delete=models.PROTECT,
-        related_name='itens_pedido'
-    )
-
+    pedido   = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
+    produto  = models.ForeignKey(Produto, on_delete=models.PROTECT, related_name='itens_pedido')
     preco    = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:

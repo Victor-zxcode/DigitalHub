@@ -36,9 +36,9 @@ def produtos(request):
     busca = request.GET.get('q', '').strip()
     if busca:
         lista = lista.filter(
-            models.Q(nome__icontains=busca) |
-            models.Q(descricao__icontains=busca) |
-            models.Q(resumo__icontains=busca)
+            models.Q(nome__icontains=busca) 
+            or models.Q(descricao__icontains=busca) 
+            or models.Q(resumo__icontains=busca)
         )
 
     # Filtro por categoria
