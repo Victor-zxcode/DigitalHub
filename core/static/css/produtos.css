@@ -2,6 +2,8 @@
    produtos.css — Listagem de produtos redesenhada
 ══════════════════════════════════════════════════════════════════ */
 
+
+
 .lista-wrapper {
   padding-top: calc(var(--navbar-h) + var(--s8));
   padding-bottom: var(--s16);

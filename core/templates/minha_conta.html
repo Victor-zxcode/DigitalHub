@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Minha Conta — DigitalHub{% endblock %}
+{% block title %}Minha Conta{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
@@ -12,7 +12,7 @@
   <div class="container">
 
     <div class="conta-header">
-      <h1>Olá, {{ usuario.username }} 👋</h1>
+      <h1>Olá, {{ usuario.username }}</h1>
       <p>{{ usuario.email }}</p>
     </div>
 
