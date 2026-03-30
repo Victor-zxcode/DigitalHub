@@ -57,7 +57,6 @@ class Produto(models.Model):
     imagem         = models.ImageField(upload_to='produtos/', blank=True, null=True)
     status         = models.CharField(max_length=20, choices=Status.choices, default=Status.RASCUNHO)
     destaque       = models.BooleanField(default=False)
-
     categoria      = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='produtos')
     criado_em      = models.DateTimeField(auto_now_add=True)
     atualizado_em  = models.DateTimeField(auto_now=True)

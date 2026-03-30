@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Produto, Categoria, Pedido, ItemPedido, Carrinho, ItemCarrinho
-from .forms import FormCadastro, FormLogin, FormContato
 from django.db import models
 from django.core.paginator import Paginator
+from .models import Produto, Categoria, Pedido, ItemPedido, Carrinho, ItemCarrinho
+from .forms import FormCadastro, FormLogin, FormContato, FormPerfil, FormTrocarSenha
 from .utils import enviar_email_confirmacao_compra, enviar_email_boas_vindas
 
 
+# ── Home ─────────────────────────────────────────────────────────
 
 def home(request):
     produtos = Produto.objects.filter(
@@ -30,22 +31,19 @@ def home(request):
     })
 
 
-from django.core.paginator import Paginator
-
+# ── Produtos ──────────────────────────────────────────────────────
 
 def produtos(request):
     lista = Produto.objects.filter(status='ativo').order_by('-criado_em')
 
-    # Busca
     busca = request.GET.get('q', '').strip()
     if busca:
         lista = lista.filter(
-            models.Q(nome__icontains=busca) 
-            or models.Q(descricao__icontains=busca) 
-            or models.Q(resumo__icontains=busca)
+            models.Q(nome__icontains=busca) |
+            models.Q(descricao__icontains=busca) |
+            models.Q(resumo__icontains=busca)
         )
 
-    # Filtro por categoria
     categoria_slug = request.GET.get('categoria', '')
     categoria_ativa = None
     if categoria_slug:
@@ -53,7 +51,13 @@ def produtos(request):
         if categoria_ativa:
             lista = lista.filter(categoria=categoria_ativa)
 
-    # Paginação — 9 produtos por página
+    preco_min = request.GET.get('preco_min', '').strip()
+    preco_max = request.GET.get('preco_max', '').strip()
+    if preco_min:
+        lista = lista.filter(preco__gte=preco_min)
+    if preco_max:
+        lista = lista.filter(preco__lte=preco_max)
+
     paginator = Paginator(lista, 9)
     pagina    = request.GET.get('page', 1)
     produtos  = paginator.get_page(pagina)
@@ -66,8 +70,12 @@ def produtos(request):
         'busca':            busca,
         'categoria_ativa':  categoria_ativa,
         'total_resultados': paginator.count,
+        'preco_min':        preco_min,
+        'preco_max':        preco_max,
     })
 
+
+# ── Categorias ────────────────────────────────────────────────────
 
 def categorias(request):
     lista = Categoria.objects.filter(ativa=True)
@@ -79,9 +87,11 @@ def categoria_detalhe(request, slug):
     lista = Produto.objects.filter(categoria=categoria, status='ativo')
     return render(request, 'categoria_detalhe.html', {
         'categoria': categoria,
-        'produtos': lista,
+        'produtos':  lista,
     })
 
+
+# ── Ofertas ───────────────────────────────────────────────────────
 
 def ofertas(request):
     lista = Produto.objects.filter(
@@ -91,95 +101,67 @@ def ofertas(request):
     return render(request, 'ofertas.html', {'produtos': lista})
 
 
+# ── Contato ───────────────────────────────────────────────────────
+
 def contato(request):
     form = FormContato(request.POST or None)
-
     if request.method == 'POST':
         if form.is_valid():
-            # Em produção: enviar e-mail com django.core.mail.send_mail
             messages.success(request, 'Mensagem enviada com sucesso! Retornaremos em breve.')
             return redirect('contato')
         else:
             messages.error(request, 'Corrija os erros abaixo.')
-
     return render(request, 'contato.html', {'form': form})
+
+
+# ── Como funciona ─────────────────────────────────────────────────
+
+def como_funciona(request):
+    return render(request, 'como_funciona.html', {})
+
+
+# ── Produto detalhe ───────────────────────────────────────────────
 
 def produto_detalhe(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id, status='ativo')
+
+    ja_comprados = []
+    if request.user.is_authenticated:
+        ja_comprados = ItemPedido.objects.filter(
+            pedido__usuario=request.user,
+            pedido__status='pago'
+        ).values_list('produto_id', flat=True)
+
     relacionados = Produto.objects.filter(
         status='ativo',
         categoria=produto.categoria
-    ).exclude(id=produto.id)[:4]
+    ).exclude(
+        id=produto.id
+    ).exclude(
+        id__in=ja_comprados
+    ).order_by('-destaque', 'preco_original', '-criado_em')[:4]
+
+    if not relacionados.exists():
+        relacionados = Produto.objects.filter(
+            status='ativo'
+        ).exclude(
+            id=produto.id
+        ).exclude(
+            id__in=ja_comprados
+        ).order_by('-destaque', '-criado_em')[:4]
+
     return render(request, 'produto_detalhe.html', {
-        'produto': produto,
+        'produto':      produto,
         'relacionados': relacionados,
     })
 
 
-def comprar_produto(request, produto_id):
-    return render(request, 'comprar.html', {})
-
-
-# ── Autenticação ────────────────────────────────────────────────
-
-def cadastro(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-
-    form = FormCadastro(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            usuario = form.save()
-            login(request, usuario)
-
-            # ── Envia e-mail de boas-vindas ──────────────────────
-            try:
-                enviar_email_boas_vindas(usuario)
-            except Exception as e:
-                print(f'Erro ao enviar e-mail: {e}')
-
-            messages.success(request, f'Bem-vindo, {usuario.username}!')
-            return redirect('home')
-        else:
-            messages.error(request, 'Corrija os erros abaixo.')
-
-    return render(request, 'cadastro.html', {'form': form})
-
-def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-
-    form = FormLogin(request, request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            usuario = form.get_user()
-            login(request, usuario)
-            messages.success(request, f'Bem-vindo de volta, {usuario.username}!')
-            # Redireciona para a página que o usuário tentou acessar
-            next_url = request.GET.get('next', 'home')
-            return redirect(next_url)
-        else:
-            messages.error(request, 'Usuário ou senha inválidos.')
-
-    return render(request, 'login.html', {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    messages.info(request, 'Você saiu da sua conta.')
-    return redirect('home')
-
-
-@login_required
-def minha_conta(request):
-    return render(request, 'minha_conta.html', {'usuario': request.user})
-
+# ── Compra ────────────────────────────────────────────────────────
 
 @login_required
 def comprar_produto(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id, status='ativo')
 
-    # Verifica se o usuário já comprou esse produto
     ja_comprou = ItemPedido.objects.filter(
         pedido__usuario=request.user,
         pedido__status='pago',
@@ -187,7 +169,7 @@ def comprar_produto(request, produto_id):
     ).exists()
 
     return render(request, 'checkout.html', {
-        'produto': produto,
+        'produto':    produto,
         'ja_comprou': ja_comprou,
     })
 
@@ -220,11 +202,10 @@ def confirmar_compra(request, produto_id):
         preco=produto.preco
     )
 
-    # ── Envia e-mail de confirmação ──────────────────────────────
     try:
         enviar_email_confirmacao_compra(pedido)
     except Exception as e:
-        print(f'Erro ao enviar e-mail: {e}')  # não quebra o fluxo
+        print(f'Erro ao enviar e-mail: {e}')
 
     messages.success(request, f'Compra de "{produto.nome}" realizada com sucesso!')
     return redirect('pedido_confirmado', pedido_id=pedido.id)
@@ -236,23 +217,94 @@ def pedido_confirmado(request, pedido_id):
     return render(request, 'pedido_confirmado.html', {'pedido': pedido})
 
 
+# ── Autenticação ──────────────────────────────────────────────────
+
+def cadastro(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    form = FormCadastro(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            usuario = form.save()
+            login(request, usuario)
+            try:
+                enviar_email_boas_vindas(usuario)
+            except Exception as e:
+                print(f'Erro ao enviar e-mail: {e}')
+            messages.success(request, f'Bem-vindo, {usuario.username}!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Corrija os erros abaixo.')
+
+    return render(request, 'cadastro.html', {'form': form})
+
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    form = FormLogin(request, request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            usuario = form.get_user()
+            login(request, usuario)
+            messages.success(request, f'Bem-vindo de volta, {usuario.username}!')
+            next_url = request.GET.get('next', 'home')
+            return redirect(next_url)
+        else:
+            messages.error(request, 'Usuário ou senha inválidos.')
+
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, 'Você saiu da sua conta.')
+    return redirect('home')
+
+
+# ── Minha conta ───────────────────────────────────────────────────
+
 @login_required
 def minha_conta(request):
-    pedidos = Pedido.objects.filter(
+    pedidos     = Pedido.objects.filter(
         usuario=request.user
     ).prefetch_related('itens__produto')
+
+    form_perfil = FormPerfil(instance=request.user)
+    form_senha  = FormTrocarSenha(request.user)
+
+    if request.method == 'POST':
+
+        if 'salvar_perfil' in request.POST:
+            form_perfil = FormPerfil(request.POST, instance=request.user)
+            if form_perfil.is_valid():
+                form_perfil.save()
+                messages.success(request, 'Perfil atualizado com sucesso!')
+                return redirect('minha_conta')
+            else:
+                messages.error(request, 'Corrija os erros abaixo.')
+
+        elif 'trocar_senha' in request.POST:
+            form_senha = FormTrocarSenha(request.user, request.POST)
+            if form_senha.is_valid():
+                user = form_senha.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Senha alterada com sucesso!')
+                return redirect('minha_conta')
+            else:
+                messages.error(request, 'Corrija os erros abaixo.')
+
     return render(request, 'minha_conta.html', {
-        'usuario': request.user,
-        'pedidos': pedidos,
+        'pedidos':     pedidos,
+        'form_perfil': form_perfil,
+        'form_senha':  form_senha,
+        'usuario':     request.user,
     })
 
 
-def como_funciona(request):
-    return render(request, 'como_funciona.html', {})
-
-
-
-# ── Carrinho ─────────────────────────────────────────────────────
+# ── Carrinho ──────────────────────────────────────────────────────
 
 @login_required
 def carrinho(request):
@@ -264,14 +316,17 @@ def carrinho(request):
 def adicionar_carrinho(request, produto_id):
     produto  = get_object_or_404(Produto, id=produto_id, status='ativo')
     carrinho, _ = Carrinho.objects.get_or_create(usuario=request.user)
-    item, criado = ItemCarrinho.objects.get_or_create(carrinho=carrinho, produto=produto)
+
+    item, criado = ItemCarrinho.objects.get_or_create(
+        carrinho=carrinho,
+        produto=produto
+    )
 
     if criado:
         messages.success(request, f'"{produto.nome}" adicionado ao carrinho.')
     else:
         messages.info(request, f'"{produto.nome}" já está no seu carrinho.')
 
-    # Volta para a página anterior ou vai para o carrinho
     return redirect(request.META.get('HTTP_REFERER', 'carrinho'))
 
 
@@ -295,7 +350,6 @@ def finalizar_carrinho(request):
         messages.warning(request, 'Seu carrinho está vazio.')
         return redirect('carrinho')
 
-    # Cria um pedido com todos os itens do carrinho
     pedido = Pedido.objects.create(
         usuario=request.user,
         status=Pedido.Status.PAGO,
@@ -303,7 +357,6 @@ def finalizar_carrinho(request):
     )
 
     for item in carrinho.itens.all():
-        # Evita duplicata — pula produto já comprado
         ja_comprou = ItemPedido.objects.filter(
             pedido__usuario=request.user,
             pedido__status='pago',
@@ -317,10 +370,8 @@ def finalizar_carrinho(request):
                 preco=item.produto.preco
             )
 
-    # Limpa o carrinho após finalizar
     carrinho.itens.all().delete()
 
-    # Envia e-mail de confirmação
     try:
         enviar_email_confirmacao_compra(pedido)
     except Exception as e:

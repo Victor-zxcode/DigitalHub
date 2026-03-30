@@ -220,3 +220,35 @@
   .lista-busca__wrap { flex: 1; }
   .lista-produtos { grid-template-columns: 1fr; }
 }
+
+
+
+/* ── Filtro de preço ─────────────────────────────────────────── */
+.lista-preco {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.lista-preco__input {
+  width: 90px;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--ink-800);
+  background: var(--white);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-lg);
+  outline: none;
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+.lista-preco__input:focus {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-blue);
+}
+.lista-preco__input::placeholder { color: var(--ink-300); }
+.lista-preco__sep {
+  font-size: var(--text-sm);
+  color: var(--ink-300);
+  flex-shrink: 0;
+}

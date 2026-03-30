@@ -30,24 +30,46 @@
       </div>
 
       <form method="get" class="lista-busca">
-        {% if categoria_ativa %}
-        <input type="hidden" name="categoria" value="{{ categoria_ativa.slug }}">
-        {% endif %}
-        <div class="lista-busca__wrap">
-          <i data-lucide="search" class="lista-busca__icon"></i>
-          <input
-            type="text"
-            name="q"
-            value="{{ busca }}"
-            placeholder="Buscar produtos..."
-            class="lista-busca__input"
-          >
-        </div>
-        <button type="submit" class="btn btn--primary">Buscar</button>
-        {% if busca %}
-        <a href="{% url 'produtos' %}" class="btn btn--ghost">Limpar</a>
-        {% endif %}
-      </form>
+  {% if categoria_ativa %}
+  <input type="hidden" name="categoria" value="{{ categoria_ativa.slug }}">
+  {% endif %}
+
+  <div class="lista-busca__wrap">
+    <i data-lucide="search" class="lista-busca__icon"></i>
+    <input
+      type="text"
+      name="q"
+      value="{{ busca }}"
+      placeholder="Buscar produtos..."
+      class="lista-busca__input"
+    >
+  </div>
+
+  <div class="lista-preco">
+    <input
+      type="number"
+      name="preco_min"
+      value="{{ preco_min }}"
+      placeholder="R$ mín"
+      class="lista-preco__input"
+      min="0"
+    >
+    <span class="lista-preco__sep">—</span>
+    <input
+      type="number"
+      name="preco_max"
+      value="{{ preco_max }}"
+      placeholder="R$ máx"
+      class="lista-preco__input"
+      min="0"
+    >
+  </div>
+
+  <button type="submit" class="btn btn--primary">Buscar</button>
+  {% if busca or preco_min or preco_max %}
+  <a href="{% url 'produtos' %}" class="btn btn--ghost">Limpar</a>
+  {% endif %}
+</form>
     </div>
 
     <div class="lista-grid">

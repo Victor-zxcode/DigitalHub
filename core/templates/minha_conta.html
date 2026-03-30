@@ -16,39 +16,43 @@
       <p>{{ usuario.email }}</p>
     </div>
 
-    <h2 class="conta-secao-titulo">Meus pedidos</h2>
+    <!-- Perfil e senha -->
+    <div class="conta-secoes">
 
-    {% if pedidos %}
-    <div class="conta-pedidos">
-      {% for pedido in pedidos %}
-      <div class="conta-pedido">
-        <div class="conta-pedido__header">
-          <span>Pedido #{{ pedido.id }}</span>
-          <span class="conta-pedido__status conta-pedido__status--{{ pedido.status }}">
-            {{ pedido.get_status_display }}
-          </span>
-          <span>{{ pedido.criado_em|date:"d/m/Y" }}</span>
-          <span><strong>R$ {{ pedido.total|floatformat:2 }}</strong></span>
-        </div>
-        <div class="conta-pedido__itens">
-          {% for item in pedido.itens.all %}
-          <a href="{% url 'produto_detalhe' item.produto.id %}" class="conta-pedido__item">
-            <span>{{ item.produto.nome }}</span>
-            <span>R$ {{ item.preco|floatformat:2 }}</span>
-          </a>
-          {% endfor %}
-        </div>
+      <!-- Editar perfil -->
+      <div class="conta-secao">
+        <h2 class="conta-secao-titulo">
+          <i data-lucide="user" style="width:18px;height:18px;stroke-width:1.75;color:var(--blue);"></i>
+          Meu perfil
+        </h2>
+        <form method="post" class="conta-form">
+          {% csrf_token %}
+          <div class="conta-form__grid">
+            {% for field in form_perfil %}
+            <div class="form-group">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+              <span class="form-error">{{ field.errors|join:", " }}</span>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          <button type="submit" name="salvar_perfil" class="btn btn--primary">
+            <i data-lucide="save" style="width:15px;height:15px;stroke-width:2;"></i>
+            Salvar perfil
+          </button>
+        </form>
       </div>
-      {% endfor %}
-    </div>
 
-    {% else %}
-    <div class="conta-vazio">
-      <p>Você ainda não fez nenhuma compra.</p>
-      <a href="{% url 'produtos' %}" class="btn btn--primary">Ver produtos</a>
-    </div>
-    {% endif %}
+      <!-- Trocar senha -->
+      <div class="conta-secao">
+        <h2 class="conta-secao-titulo">
+          <i data-lucide="lock" style="width:18px;height:18px;stroke-width:1.75;color:var(--blue);"></i>
+          Trocar senha
+        </h2>
+        <form method="post" class="conta-form">
+          {% csrf_token %}
+          <div class
 
-  </div>
-</div>
 {% endblock %}
