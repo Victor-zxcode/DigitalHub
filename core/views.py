@@ -9,16 +9,10 @@ from .forms import FormCadastro, FormLogin, FormContato, FormPerfil, FormTrocarS
 from .utils import enviar_email_confirmacao_compra, enviar_email_boas_vindas
 
 
-# ── Home ─────────────────────────────────────────────────────────
 
 def home(request):
-    produtos = Produto.objects.filter(
-        status='ativo',
-        destaque=True
-    ).order_by('-criado_em')[:8]
-
+    produtos = Produto.objects.filter(status='ativo', destaque=True).order_by('-criado_em')[:8]
     categorias = Categoria.objects.filter(ativa=True)
-
     carrinho = None
     if request.user.is_authenticated:
         carrinho, _ = Carrinho.objects.get_or_create(usuario=request.user)
@@ -31,7 +25,6 @@ def home(request):
     })
 
 
-# ── Produtos ──────────────────────────────────────────────────────
 
 def produtos(request):
     lista = Produto.objects.filter(status='ativo').order_by('-criado_em')
@@ -39,8 +32,8 @@ def produtos(request):
     busca = request.GET.get('q', '').strip()
     if busca:
         lista = lista.filter(
-            models.Q(nome__icontains=busca) |
-            models.Q(descricao__icontains=busca) |
+            models.Q(nome__icontains=busca) or
+            models.Q(descricao__icontains=busca) or
             models.Q(resumo__icontains=busca)
         )
 
@@ -75,11 +68,10 @@ def produtos(request):
     })
 
 
-# ── Categorias ────────────────────────────────────────────────────
-
 def categorias(request):
     lista = Categoria.objects.filter(ativa=True)
     return render(request, 'categorias.html', {'categorias': lista})
+
 
 
 def categoria_detalhe(request, slug):
@@ -91,17 +83,12 @@ def categoria_detalhe(request, slug):
     })
 
 
-# ── Ofertas ───────────────────────────────────────────────────────
 
 def ofertas(request):
-    lista = Produto.objects.filter(
-        status='ativo',
-        preco_original__isnull=False
-    ).order_by('-criado_em')
+    lista = Produto.objects.filter(status='ativo', preco_original__isnull=False).order_by('-criado_em')
     return render(request, 'ofertas.html', {'produtos': lista})
 
 
-# ── Contato ───────────────────────────────────────────────────────
 
 def contato(request):
     form = FormContato(request.POST or None)
@@ -114,13 +101,11 @@ def contato(request):
     return render(request, 'contato.html', {'form': form})
 
 
-# ── Como funciona ─────────────────────────────────────────────────
 
 def como_funciona(request):
     return render(request, 'como_funciona.html', {})
 
 
-# ── Produto detalhe ───────────────────────────────────────────────
 
 def produto_detalhe(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id, status='ativo')
@@ -156,7 +141,6 @@ def produto_detalhe(request, produto_id):
     })
 
 
-# ── Compra ────────────────────────────────────────────────────────
 
 @login_required
 def comprar_produto(request, produto_id):
@@ -217,7 +201,6 @@ def pedido_confirmado(request, pedido_id):
     return render(request, 'pedido_confirmado.html', {'pedido': pedido})
 
 
-# ── Autenticação ──────────────────────────────────────────────────
 
 def cadastro(request):
     if request.user.is_authenticated:
@@ -264,7 +247,6 @@ def logout_view(request):
     return redirect('home')
 
 
-# ── Minha conta ───────────────────────────────────────────────────
 
 @login_required
 def minha_conta(request):
@@ -304,7 +286,6 @@ def minha_conta(request):
     })
 
 
-# ── Carrinho ──────────────────────────────────────────────────────
 
 @login_required
 def carrinho(request):
