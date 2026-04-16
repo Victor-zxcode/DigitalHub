@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
+from .managers import CategoriaManager, ProdutoManager, PedidoManager, CarrinhoManager
 
 
 class Usuario(AbstractUser):
@@ -11,18 +12,20 @@ class Usuario(AbstractUser):
 
 
 class Categoria(models.Model):
-    nome    = models.CharField(max_length=100, unique=True)
-    slug    = models.SlugField(max_length=120, unique=True, blank=True)
-    icone   = models.CharField(max_length=10, blank=True)
-    ativa   = models.BooleanField(default=True)
-    ordem   = models.PositiveIntegerField(default=0) 
+    nome = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    icone = models.CharField(max_length=10, blank=True)
+    ativa = models.BooleanField(default=True)
+    ordem = models.PositiveIntegerField(default=0) 
 
     icone_lucide = models.CharField(
         max_length=50,
         blank=True,
         default='folder',
         help_text='Nome do ícone Lucide. Ex: graduation-cap, book-open, cpu'
-)
+    )
+
+    objects = CategoriaManager()
 
     class Meta:
         ordering = ['ordem', 'nome']
@@ -42,29 +45,34 @@ class Categoria(models.Model):
 
 
 class Produto(models.Model):
-
     class Status(models.TextChoices):
-        ATIVO    = 'ativo',    'Ativo'
-        INATIVO  = 'inativo',  'Inativo'
+        ATIVO = 'ativo', 'Ativo'
+        INATIVO = 'inativo', 'Inativo'
         RASCUNHO = 'rascunho', 'Rascunho'
 
-    nome           = models.CharField(max_length=200)
-    slug           = models.SlugField(max_length=220, unique=True, blank=True)
-    descricao      = models.TextField()
-    resumo         = models.CharField(max_length=300, blank=True)
-    preco          = models.DecimalField(max_digits=8, decimal_places=2)
+    nome = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    descricao = models.TextField()
+    resumo = models.CharField(max_length=300, blank=True)
+    preco = models.DecimalField(max_digits=8, decimal_places=2)
     preco_original = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
-    imagem         = models.ImageField(upload_to='produtos/', blank=True, null=True)
-    status         = models.CharField(max_length=20, choices=Status.choices, default=Status.RASCUNHO)
-    destaque       = models.BooleanField(default=False)
-    categoria      = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='produtos')
-    criado_em      = models.DateTimeField(auto_now_add=True)
-    atualizado_em  = models.DateTimeField(auto_now=True)
+    imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.RASCUNHO)
+    destaque = models.BooleanField(default=False)
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='produtos')
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    objects = ProdutoManager()
 
     class Meta:
         ordering = ['-criado_em']
         verbose_name = 'Produto'
         verbose_name_plural = 'Produtos'
+        indexes = [
+            models.Index(fields=['status', '-criado_em']),
+            models.Index(fields=['categoria', 'status']),
+        ]
 
     def __str__(self):
         return self.nome
@@ -88,24 +96,75 @@ class Produto(models.Model):
             return int((diff / self.preco_original) * 100)
         return 0
 
+    def usuario_ja_comprou(self, usuario):
+        if not usuario.is_authenticated:
+            return False
+        
+        return ItemPedido.objects.filter(
+            pedido__usuario=usuario,
+            pedido__status=Pedido.Status.PAGO,
+            produto=self
+        ).exists()
+
+    def produtos_relacionados(self, usuario=None, limite=4):
+        relacionados = (
+            Produto.objects
+            .ativos()
+            .com_categoria()
+            .filter(categoria=self.categoria)
+            .exclude(id=self.id)
+            .ordenado_recente()
+        )
+        
+        if usuario and usuario.is_authenticated:
+            ja_comprados = ItemPedido.objects.filter(
+                pedido__usuario=usuario,
+                pedido__status=Pedido.Status.PAGO
+            ).values_list('produto_id', flat=True)
+            
+            relacionados = relacionados.exclude(id__in=ja_comprados)
+        
+        relacionados_list = list(relacionados[:limite])
+        
+        if len(relacionados_list) < limite:
+            faltam = limite - len(relacionados_list)
+            ids_excluir = [p.id for p in relacionados_list] + [self.id]
+            
+            geral = (
+                Produto.objects
+                .ativos()
+                .com_categoria()
+                .exclude(id__in=ids_excluir)
+                .ordenado_recente()[:faltam]
+            )
+            
+            relacionados_list.extend(geral)
+        
+        return relacionados_list
+
 
 class Pedido(models.Model):
-
     class Status(models.TextChoices):
-        PENDENTE   = 'pendente',   'Pendente'
-        PAGO       = 'pago',       'Pago'
-        CANCELADO  = 'cancelado',  'Cancelado'
+        PENDENTE = 'pendente', 'Pendente'
+        PAGO = 'pago', 'Pago'
+        CANCELADO = 'cancelado', 'Cancelado'
 
-    usuario       = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos')
-    status        = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDENTE)
-    total         = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    criado_em     = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='pedidos')
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDENTE)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+
+    objects = PedidoManager()
 
     class Meta:
         ordering = ['-criado_em']
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
+        indexes = [
+            models.Index(fields=['usuario', '-criado_em']),
+            models.Index(fields=['status']),
+        ]
 
     def __str__(self):
         return f'Pedido #{self.id} — {self.usuario.username}'
@@ -116,13 +175,14 @@ class Pedido(models.Model):
 
 
 class ItemPedido(models.Model):
-    pedido   = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
-    produto  = models.ForeignKey(Produto, on_delete=models.PROTECT, related_name='itens_pedido')
-    preco    = models.DecimalField(max_digits=8, decimal_places=2)
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='itens')
+    produto = models.ForeignKey(Produto, on_delete=models.PROTECT, related_name='itens_pedido')
+    preco = models.DecimalField(max_digits=8, decimal_places=2)
 
     class Meta:
         verbose_name = 'Item do Pedido'
         verbose_name_plural = 'Itens do Pedido'
+        unique_together = ('pedido', 'produto')
 
     def __str__(self):
         return f'{self.produto.nome} — Pedido #{self.pedido.id}'
@@ -130,9 +190,11 @@ class ItemPedido(models.Model):
 
 
 class Carrinho(models.Model):
-    usuario       = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='carrinho')
-    criado_em     = models.DateTimeField(auto_now_add=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, related_name='carrinho')
+    criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+
+    objects = CarrinhoManager()
 
     class Meta:
         verbose_name = 'Carrinho'
@@ -151,8 +213,8 @@ class Carrinho(models.Model):
 
 
 class ItemCarrinho(models.Model):
-    carrinho      = models.ForeignKey(Carrinho, on_delete=models.CASCADE, related_name='itens')
-    produto       = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='itens_carrinho')
+    carrinho = models.ForeignKey(Carrinho, on_delete=models.CASCADE, related_name='itens')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='itens_carrinho')
     adicionado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:
