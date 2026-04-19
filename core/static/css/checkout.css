@@ -49,7 +49,7 @@
 .checkout-produto__info p { font-size: var(--text-sm); color: var(--ink-400); line-height: 1.5; }
 
 .checkout-total { display: flex; flex-direction: column; gap: var(--s3); padding-top: var(--s4); border-top: 1px solid var(--ink-100); }
-.checkout-total__linha { display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--ink-400); }
+.checkout-total__linha { display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--ink-600); font-weight: 500; }
 .checkout-total__linha--desconto { color: var(--green); }
 .checkout-total__linha--total { padding-top: var(--s3); border-top: 1px solid var(--ink-100); font-family: var(--font-display); font-size: var(--text-xl); font-weight: 700; letter-spacing: -0.02em; color: var(--ink-900); }
 

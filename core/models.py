@@ -220,7 +220,6 @@ class ItemCarrinho(models.Model):
     class Meta:
         verbose_name = 'Item do Carrinho'
         verbose_name_plural = 'Itens do Carrinho'
-        # Impede duplicata do mesmo produto no carrinho
         unique_together = ('carrinho', 'produto')
 
     def __str__(self):

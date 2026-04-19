@@ -29,7 +29,7 @@
   letter-spacing: -0.03em;
   color: var(--ink-900);
 }
-.lista-header__contagem { font-size: var(--text-sm); color: var(--ink-400); margin-top: var(--s1); }
+.lista-header__contagem { font-size: var(--text-sm); color: var(--ink-600); margin-top: var(--s1); font-weight: 500; }
 
 /* ── Busca ───────────────────────────────────────────────────── */
 .lista-busca { display: flex; align-items: center; gap: var(--s2); flex-wrap: wrap; }
@@ -232,9 +232,10 @@
 }
 .pcard__desc {
   font-size: var(--text-sm);
-  color: var(--ink-400);
+  color: var(--ink-600);
   line-height: 1.6;
   flex: 1;
+  font-weight: 500;
 }
 
 .pcard__footer {
@@ -253,8 +254,9 @@
 }
 .pcard__price-old {
   font-size: var(--text-xs);
-  color: var(--ink-300);
+  color: var(--ink-500);
   text-decoration: line-through;
+  font-weight: 500;
 }
 .pcard__price {
   font-family: var(--font-display);

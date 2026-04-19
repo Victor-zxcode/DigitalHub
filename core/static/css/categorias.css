@@ -39,8 +39,9 @@
 }
 .cats-header__sub {
   font-size: var(--text-base);
-  color: var(--ink-400);
+  color: var(--ink-600);
   line-height: 1.7;
+  font-weight: 500;
 }
 
 /* Variante ofertas — alinhado à esquerda */
@@ -109,7 +110,7 @@
   color: var(--ink-900);
   margin-bottom: 2px;
 }
-.cat-card__count { font-size: var(--text-xs); color: var(--ink-400); }
+.cat-card__count { font-size: var(--text-xs); color: var(--ink-600); font-weight: 500; }
 
 .cat-card__arrow {
   width: 16px;
@@ -191,7 +192,7 @@
   color: var(--blue);
 }
 .ofertas-stat strong { display: block; font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; letter-spacing: -0.02em; color: var(--ink-900); }
-.ofertas-stat span   { font-size: var(--text-xs); color: var(--ink-400); }
+.ofertas-stat span   { font-size: var(--text-xs); color: var(--ink-600); font-weight: 500; }
 
 /* Badge maior para ofertas */
 .pcard__badge--lg {

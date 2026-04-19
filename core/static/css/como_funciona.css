@@ -52,10 +52,11 @@
 }
 .cf-section-sub {
   font-size: var(--text-base);
-  color: var(--ink-400);
+  color: var(--ink-600);
   line-height: 1.7;
   max-width: 480px;
   margin-inline: auto;
+  font-weight: 500;
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -99,10 +100,11 @@
 .cf-hero__titulo em { font-style: normal; color: var(--blue); }
 .cf-hero__sub {
   font-size: var(--text-base);
-  color: var(--ink-400);
+  color: var(--ink-600);
   line-height: 1.75;
   margin-bottom: var(--s8);
   max-width: 460px;
+  font-weight: 500;
 }
 .cf-hero__acoes { display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap; }
 
